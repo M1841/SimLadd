@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>DRAFT — Editor</title>
+
+    <style type="text/css">
+      body {
+        background-color: #0f0f0f;
+      }
+      .grid-stack {
+        background-color: #1e1e1e;
+      }
+      .grid-stack-item-content {
+        color: #f0f0f0;
+        background-color: #3d3d3d;
+      }
+    </style>
+
+    <script src="node_modules/gridstack/dist/gridstack-all.js"></script>
+    <link
+      href="node_modules/gridstack/dist/gridstack.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="grid-stack"></div>
+
+    <script type="text/javascript">
+      const items = [
+        { content: "my first widget" }, // will default to location (0,0) and 1x1
+        { w: 2, content: "another longer widget!" }, // will be placed next at (1,0) and 2x1
+      ];
+      const grid = GridStack.init();
+      grid.load(items);
+    </script>
+  </body>
+</html>
