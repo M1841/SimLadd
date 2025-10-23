@@ -5,3 +5,5 @@ F. Bădău, V. Iordache, V. A. Stan and A. C. Cormoș, ["Ladder Logic implementa
 T. V. Berbesi and J. A. Pineda Vivas, ["Ladder Diagram Programming Systematization Through Active PBL Teaching,"](https://ieeexplore.ieee.org/document/10755880) 2024 IEEE ANDESCON, Cusco, Peru, 2024, pp. 1-5, doi: 10.1109/ANDESCON61840.2024.10755880.
 
 M. Lenc, P. Píša and R. Bucher, ["pysimCoder – Open-Source Rapid Control Prototyping for GNU/Linux and NuttX,"](https://ieeexplore.ieee.org/document/10217596) 2023 24th International Conference on Process Control (PC), Strbske Pleso, Slovakia, 2023, pp. 102-107, doi: 10.1109/PC58330.2023.10217596.
+
+Kandula, Sheshananda Reddy, [WebView Security Best Practices](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5137105) (December 31, 2024). International Journal of Computer Trends and Technology, volume 72, issue 12, 2024[10.14445/22312803/IJCTT-V72I12P121]
