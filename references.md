@@ -3,3 +3,5 @@ J. -G. Díaz-Martínez, I. Gutiérrez-Carmona and R. -D. Arteaga-Jiménez, ["Wor
 F. Bădău, V. Iordache, V. A. Stan and A. C. Cormoș, ["Ladder Logic implementation for Romanian railway interlockings,"](https://ieeexplore.ieee.org/document/10607527) 2024 16th International Conference on Electronics, Computers and Artificial Intelligence (ECAI), Iasi, Romania, 2024, pp. 1-5, doi: 10.1109/ECAI61503.2024.10607527.
 
 T. V. Berbesi and J. A. Pineda Vivas, ["Ladder Diagram Programming Systematization Through Active PBL Teaching,"](https://ieeexplore.ieee.org/document/10755880) 2024 IEEE ANDESCON, Cusco, Peru, 2024, pp. 1-5, doi: 10.1109/ANDESCON61840.2024.10755880.
+
+M. Lenc, P. Píša and R. Bucher, ["pysimCoder – Open-Source Rapid Control Prototyping for GNU/Linux and NuttX,"](https://ieeexplore.ieee.org/document/10217596) 2023 24th International Conference on Process Control (PC), Strbske Pleso, Slovakia, 2023, pp. 102-107, doi: 10.1109/PC58330.2023.10217596.
