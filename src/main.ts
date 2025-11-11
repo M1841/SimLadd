@@ -1,3 +1,3 @@
-import { renderExample } from "../lib/expressions";
+import { renderExample } from "../lib/editor/.example";
 
 renderExample();

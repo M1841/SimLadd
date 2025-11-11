@@ -1,0 +1,52 @@
+import { ConjunctiveNode } from "./ConjunctiveNode";
+import { DisjunctiveNode } from "./DisjunctiveNode";
+import { Network } from "./Network";
+import { OutputNode } from "./OutputNode";
+import { RelayNode } from "./RelayNode";
+
+export function renderExample() {
+  const simpleNetwork = new Network(new RelayNode("%I0.0", "START"), [
+    new OutputNode("%Q0.0", "LED"),
+  ]);
+  const conjunctiveInputNetwork = new Network(
+    new ConjunctiveNode([
+      new RelayNode("%I0.0", "START"),
+      new RelayNode("%I0.1", "STOP", false),
+    ]),
+    [new OutputNode("%Q0.0", "LED")]
+  );
+  const disjunctiveInputNetwork = new Network(
+    new DisjunctiveNode([
+      new RelayNode("%I0.0", "START"),
+      new RelayNode("%Q0.0", "LED"),
+    ]),
+    [new OutputNode("%Q0.0", "LED")]
+  );
+  const nestedInputNetwork = new Network(
+    new DisjunctiveNode([
+      new ConjunctiveNode([
+        new RelayNode("%I0.0", "START"),
+        new RelayNode("%I0.1", "STOP", false),
+      ]),
+      new RelayNode("%Q0.0", "LED"),
+    ]),
+    [new OutputNode("%Q0.0", "LED")]
+  );
+
+  const sample = document.createElement("div");
+  sample.style.display = "flex";
+  sample.style.flexDirection = "column";
+  sample.style.gap = "80px";
+  sample.style.padding = "20px";
+
+  [
+    simpleNetwork,
+    conjunctiveInputNetwork,
+    disjunctiveInputNetwork,
+    nestedInputNetwork,
+  ].forEach((network) => {
+    sample.appendChild(network.render());
+  });
+
+  document.getElementsByTagName("body")[0].appendChild(sample);
+}
