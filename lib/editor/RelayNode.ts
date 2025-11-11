@@ -27,7 +27,6 @@ export class RelayNode implements Node {
     });
     address.addEventListener("blur", () => {
       this.address = address.textContent;
-      console.log(this);
     });
     node.appendChild(address);
 
