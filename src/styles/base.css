@@ -1,4 +1,17 @@
+@font-face {
+  font-family: "Ubuntu Mono";
+  src: url("fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf")
+    format("truetype");
+}
+
 :root {
+  --font-base: "Open Sans", sans-serif;
+  --font-mono: "Ubuntu Mono", monospace;
   --color-bg: #1f1f1f;
   --color-text: #f0f0f0;
   --color-text-muted: #f0f0f090;
@@ -18,6 +31,7 @@
 }
 
 body {
+  font-family: var(--font-base);
   background-color: var(--color-bg);
   color: var(--color-text);
 }

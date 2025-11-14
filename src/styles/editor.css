@@ -1,15 +1,23 @@
 .network {
   display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.network-nodes {
+  display: flex;
   justify-content: space-between;
   border-left: solid 3px var(--color-text);
   border-right: solid 3px var(--color-text);
   position: relative;
 }
 
-.network::before {
+.network-nodes::before {
   content: "";
   position: absolute;
-  top: 53px;
+  top: 26px;
   width: 100%;
   height: 3px;
   background: var(--color-text);
@@ -25,6 +33,27 @@
 .OR {
   flex-direction: column;
   gap: 30px;
+  position: relative;
+}
+
+.OR::before {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 87px;
+  right: -3px;
+  bottom: 27px;
+  background-color: var(--color-text);
+  z-index: -1;
+}
+.OR::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  bottom: 26px;
+  background-color: var(--color-text);
+  z-index: -1;
 }
 
 .relay-node {
@@ -32,33 +61,31 @@
   flex-direction: column;
   justify-content: center;
   background-color: var(--color-bg);
+  border-radius: 1px;
+  height: fit-content;
+  width: fit-content;
   align-items: center;
-  border-radius: 5px;
-  gap: 13px;
-  width: 105px;
-  height: 105px;
   text-align: center;
-}
-
-.NOT {
-  text-decoration: line-through;
 }
 
 .node-address,
 .node-label {
-  font-family: monospace;
+  font-size: 12px;
+  font-family: var(--font-mono);
   color: var(--color-text-muted);
 }
 
-.node-address:hover,
 .node-address:focus {
   color: var(--color-text);
 }
 
 .node-icon {
-  font-family: monospace;
+  cursor: grab;
+  font-family: var(--font-mono);
   font-weight: bold;
-  font-size: 25px;
+  font-size: 23px;
+  margin-top: 2px;
+  margin-bottom: 6px;
 }
 
 .node-icon,
