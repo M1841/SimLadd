@@ -33,9 +33,9 @@ export class RelayNode implements Node {
     const icon = document.createElement("div");
     icon.classList.add("node-icon");
     if (this instanceof OutputNode) {
-      icon.textContent = `——(${this.isOpen ? " " : "/"})——`;
+      icon.textContent = `(${this.isOpen ? " " : "/"})`;
     } else {
-      icon.textContent = `——]${this.isOpen ? " " : "/"}[——`;
+      icon.textContent = `]${this.isOpen ? " " : "/"}[`;
     }
     node.appendChild(icon);
 

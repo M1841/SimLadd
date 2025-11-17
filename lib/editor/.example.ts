@@ -7,8 +7,8 @@ import { RelayNode } from "./RelayNode";
 export function renderExample() {
   const simpleNetwork = new Network(
     "Network 1",
-    new RelayNode("%I0.0", "START"),
-    [new OutputNode("%Q0.0", "LED")]
+    new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
+    new ConjunctiveNode([new OutputNode("%Q0.0", "LED")])
   );
   const conjunctiveInputNetwork = new Network(
     "Network 2",
@@ -16,15 +16,15 @@ export function renderExample() {
       new RelayNode("%I0.0", "START"),
       new RelayNode("%I0.1", "STOP", false),
     ]),
-    [new OutputNode("%Q0.0", "LED")]
+    new ConjunctiveNode([new OutputNode("%Q0.0", "LED")])
   );
   const disjunctiveInputNetwork = new Network(
     "Network 3",
     new DisjunctiveNode([
-      new RelayNode("%I0.0", "START"),
-      new RelayNode("%Q0.0", "LED"),
+      new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
+      new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
     ]),
-    [new OutputNode("%Q0.0", "LED")]
+    new ConjunctiveNode([new OutputNode("%Q0.0", "LED")])
   );
   const nestedInputNetwork = new Network(
     "Network 4",
@@ -33,9 +33,9 @@ export function renderExample() {
         new RelayNode("%I0.0", "START"),
         new RelayNode("%I0.1", "STOP", false),
       ]),
-      new RelayNode("%Q0.0", "LED"),
+      new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
     ]),
-    [new OutputNode("%Q0.0", "LED")]
+    new ConjunctiveNode([new OutputNode("%Q0.0", "LED")])
   );
 
   const sample = document.createElement("div");

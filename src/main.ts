@@ -1,3 +1,7 @@
 import { renderExample } from "../lib/editor/.example";
 
-renderExample();
+try {
+  renderExample();
+} catch (error) {
+  alert(error);
+}

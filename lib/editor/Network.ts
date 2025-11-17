@@ -1,13 +1,11 @@
-import { ConjunctiveNode } from "./ConjunctiveNode";
-import { Node } from "./Node";
-import { OutputNode } from "./OutputNode";
+import { ExpressionNode } from "./ExpressionNode";
 
 export class Network {
   name: string;
-  input: Node;
-  outputs: OutputNode[];
+  input: ExpressionNode;
+  outputs: ExpressionNode;
 
-  constructor(name: string, input: Node, outputs: OutputNode[]) {
+  constructor(name: string, input: ExpressionNode, outputs: ExpressionNode) {
     this.name = name;
     this.input = input;
     this.outputs = outputs;
@@ -27,7 +25,7 @@ export class Network {
     const inputNodes = this.input.render();
     nodes.appendChild(inputNodes);
 
-    const outputNodes = new ConjunctiveNode(this.outputs).render();
+    const outputNodes = this.outputs.render();
     nodes.appendChild(outputNodes);
 
     network.appendChild(nodes);
