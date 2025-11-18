@@ -1,11 +1,12 @@
+import { ConjunctiveNode } from "./ConjunctiveNode";
 import { ExpressionNode } from "./ExpressionNode";
 
 export class Network {
   name: string;
   input: ExpressionNode;
-  outputs: ExpressionNode;
+  outputs: ConjunctiveNode;
 
-  constructor(name: string, input: ExpressionNode, outputs: ExpressionNode) {
+  constructor(name: string, input: ExpressionNode, outputs: ConjunctiveNode) {
     this.name = name;
     this.input = input;
     this.outputs = outputs;
@@ -15,9 +16,19 @@ export class Network {
     const network = document.createElement("div");
     network.classList.add("network");
 
-    const networkName = document.createElement("div");
-    networkName.textContent = "▼ " + this.name;
-    network.appendChild(networkName);
+    const header = document.createElement("div");
+    header.classList.add("network-header");
+
+    const collapseButton = document.createElement("div");
+    collapseButton.classList.add("network-collapse-button");
+    collapseButton.textContent = "▾";
+    header.appendChild(collapseButton);
+
+    const name = document.createElement("div");
+    name.textContent = this.name;
+    header.appendChild(name);
+
+    network.appendChild(header);
 
     const nodes = document.createElement("div");
     nodes.classList.add("network-nodes");
@@ -27,6 +38,16 @@ export class Network {
 
     const outputNodes = this.outputs.render();
     nodes.appendChild(outputNodes);
+
+    header.addEventListener("click", () => {
+      if (nodes.classList.contains("collapsed")) {
+        nodes.classList.remove("collapsed");
+        collapseButton.textContent = "▾";
+      } else {
+        nodes.classList.add("collapsed");
+        collapseButton.textContent = "▴";
+      }
+    });
 
     network.appendChild(nodes);
 

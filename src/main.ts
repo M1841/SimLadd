@@ -1,7 +1,11 @@
-import { renderExample } from "../lib/editor/.example";
+import { Editor } from "../lib/editor/Editor";
+import { LadderDiagram } from "../lib/editor/LadderDiagram";
 
 try {
-  renderExample();
+  const body = document.getElementsByTagName("body")[0];
+
+  const editor = new Editor(LadderDiagram.example);
+  body.appendChild(editor.render());
 } catch (error) {
   alert(error);
 }

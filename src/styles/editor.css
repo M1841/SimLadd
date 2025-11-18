@@ -1,8 +1,27 @@
+.ladder-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 1rem;
+}
+
 .network {
   display: flex;
   flex-direction: column;
   gap: 1em;
   font-weight: 500;
+}
+
+.network-header {
+  width: fit-content;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.network-collapse-button {
+  margin-top: -0.05em;
 }
 
 .network-nodes {
@@ -28,14 +47,13 @@
   top: 2em;
   left: 0em;
   width: 100%;
-  height: auto;
   border-top: solid 0.25em var(--color-text);
   z-index: -1;
 }
 
 .disjunctive-node {
   flex-direction: column;
-  gap: 2em;
+  gap: 3em;
   position: relative;
 }
 
@@ -49,7 +67,6 @@
   top: 2em;
   bottom: 1.75em;
   width: 100%;
-  height: auto;
   border-right: solid 0.25em var(--color-text);
   z-index: -1;
 }
@@ -80,7 +97,6 @@
 }
 
 .node-icon {
-  cursor: grab;
   font-family: var(--font-mono);
   background-color: var(--color-bg);
   margin-left: 1.5em;
@@ -90,11 +106,18 @@
 }
 
 .node-icon,
-.node-label {
+.node-label,
+.network-header {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.collapsed {
+  display: none;
+  width: 0em;
+  height: 0em;
 }

@@ -13,7 +13,7 @@ export class ConjunctiveNode implements ExpressionNode {
         "A conjunctive node cannot contain multiple disjunctive nodes"
       );
     }
-    this.operator = Operator.OR;
+    this.operator = Operator.AND;
     this.operands = operands;
   }
 
