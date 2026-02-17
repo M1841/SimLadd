@@ -12,6 +12,37 @@ export class RelayNode implements Node {
     this.isOpen = isOpen;
   }
 
+  toObject(): Object {
+    return {
+      address: this.address,
+      label: this.label,
+      isOpen: this.isOpen,
+
+      __type: "RelayNode",
+    };
+  }
+
+  static fromObject(object: Object): RelayNode {
+    const entries = Object.entries(object);
+
+    const __type = entries.find(([key, _]) => key === "__type")?.[1];
+    const address = entries.find(([key, _]) => key === "address")?.[1];
+    const label = entries.find(([key, _]) => key === "label")?.[1];
+    const isOpen = entries.find(([key, _]) => key === "isOpen")?.[1];
+
+    if (
+      __type === undefined ||
+      __type !== "RelayNode" ||
+      address === undefined ||
+      label === undefined ||
+      isOpen === undefined
+    ) {
+      throw new Error("Object is not a valid RelayNode");
+    }
+
+    return new RelayNode(address, label, isOpen);
+  }
+
   render(): HTMLDivElement {
     const node = document.createElement("div");
     node.classList.add("relay-node");
