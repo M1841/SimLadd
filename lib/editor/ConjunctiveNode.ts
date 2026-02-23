@@ -52,13 +52,27 @@ export class ConjunctiveNode implements ExpressionNode {
   }
 
   render(): HTMLDivElement {
-    const div = document.createElement("div");
-    div.classList.add("conjunctive-node");
+    const node = document.createElement("div");
+    node.classList.add("conjunctive-node");
 
     this.operands.forEach((operand) => {
-      div.appendChild(operand.render());
+      node.appendChild(operand.render());
     });
 
-    return div;
+    node.addEventListener("dragenter", (event) => {
+      event.preventDefault();
+    });
+    node.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      event.dataTransfer!.dropEffect = "move";
+    });
+    node.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const draggedElement = document.getElementById("dragged")!;
+      draggedElement.remove();
+      node.appendChild(draggedElement);
+    });
+
+    return node;
   }
 }

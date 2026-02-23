@@ -1,3 +1,8 @@
+.editor {
+  /* width: 80%; */
+  width: 100%;
+}
+
 .ladder-diagram {
   display: flex;
   flex-direction: column;
@@ -72,6 +77,8 @@
 }
 .conjunctive-node {
   position: relative;
+  min-width: 6.76em !important;
+  min-height: 4em !important;
 }
 
 .relay-node {
@@ -103,6 +110,7 @@
   margin-right: 1.5em;
   font-weight: bold;
   font-size: 1.5em;
+  cursor: grab;
 }
 
 .node-icon,

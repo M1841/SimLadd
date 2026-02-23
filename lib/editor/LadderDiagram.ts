@@ -1,14 +1,10 @@
-import {
-  readTextFile,
-  writeTextFile,
-  BaseDirectory,
-} from "@tauri-apps/plugin-fs";
+import { BaseDirectory, writeFile, readFile } from "@tauri-apps/plugin-fs";
 
-import { ConjunctiveNode } from "./ConjunctiveNode";
-import { DisjunctiveNode } from "./DisjunctiveNode";
+// import { ConjunctiveNode } from "./ConjunctiveNode";
+// import { DisjunctiveNode } from "./DisjunctiveNode";
 import { Network } from "./Network";
-import { OutputNode } from "./OutputNode";
-import { RelayNode } from "./RelayNode";
+// import { OutputNode } from "./OutputNode";
+// import { RelayNode } from "./RelayNode";
 
 export class LadderDiagram {
   networks: Network[];
@@ -56,51 +52,56 @@ export class LadderDiagram {
   }
 
   static async load(path: string): Promise<LadderDiagram> {
-    const content = await readTextFile(path, {
+    const decoder = new TextDecoder();
+    const bytes = await readFile(path, {
       baseDir: BaseDirectory.AppData,
     });
+    const content = decoder.decode(bytes);
     const json = JSON.parse(content);
     return LadderDiagram.fromObject(json);
   }
 
   async save(path: string): Promise<void> {
-    await writeTextFile(path, JSON.stringify(this.toObject()), {
+    const encoder = new TextEncoder();
+    const json = JSON.stringify(this.toObject());
+    const bytes = encoder.encode(json);
+    await writeFile(path, bytes, {
       baseDir: BaseDirectory.AppData,
     });
   }
 
-  static example = new LadderDiagram([
-    new Network(
-      "Network 1",
-      new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
-      new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
-    ),
-    new Network(
-      "Network 2",
-      new ConjunctiveNode([
-        new RelayNode("%I0.0", "START"),
-        new RelayNode("%I0.1", "STOP", false),
-      ]),
-      new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
-    ),
-    new Network(
-      "Network 3",
-      new DisjunctiveNode([
-        new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
-        new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
-      ]),
-      new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
-    ),
-    new Network(
-      "Network 4",
-      new DisjunctiveNode([
-        new ConjunctiveNode([
-          new RelayNode("%I0.0", "START"),
-          new RelayNode("%I0.1", "STOP", false),
-        ]),
-        new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
-      ]),
-      new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
-    ),
-  ]);
+  // static example = new LadderDiagram([
+  //   new Network(
+  //     "Network 1",
+  //     new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
+  //     new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
+  //   ),
+  //   new Network(
+  //     "Network 2",
+  //     new ConjunctiveNode([
+  //       new RelayNode("%I0.0", "START"),
+  //       new RelayNode("%I0.1", "STOP", false),
+  //     ]),
+  //     new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
+  //   ),
+  //   new Network(
+  //     "Network 3",
+  //     new DisjunctiveNode([
+  //       new ConjunctiveNode([new RelayNode("%I0.0", "START")]),
+  //       new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
+  //     ]),
+  //     new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
+  //   ),
+  //   new Network(
+  //     "Network 4",
+  //     new DisjunctiveNode([
+  //       new ConjunctiveNode([
+  //         new RelayNode("%I0.0", "START"),
+  //         new RelayNode("%I0.1", "STOP", false),
+  //       ]),
+  //       new ConjunctiveNode([new RelayNode("%Q0.0", "LED")]),
+  //     ]),
+  //     new ConjunctiveNode([new OutputNode("%Q0.0", "LED")]),
+  //   ),
+  // ]);
 }

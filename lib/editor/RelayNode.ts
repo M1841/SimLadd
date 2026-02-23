@@ -57,7 +57,7 @@ export class RelayNode implements Node {
       }
     });
     address.addEventListener("blur", () => {
-      this.address = address.textContent;
+      this.address = address.textContent ?? "";
     });
     node.appendChild(address);
 
@@ -74,6 +74,19 @@ export class RelayNode implements Node {
     label.classList.add("node-label");
     label.textContent = `"${this.label}"`;
     node.appendChild(label);
+
+    node.draggable = true;
+    node.addEventListener("dragstart", (event) => {
+      node.id = "dragged";
+      event.dataTransfer!.effectAllowed = "move";
+      event.dataTransfer!.setData("relay-node", "");
+    });
+    node.addEventListener("drag", (event) => {
+      event.preventDefault();
+    });
+    node.addEventListener("dragend", () => {
+      node.removeAttribute("id");
+    });
 
     return node;
   }

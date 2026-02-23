@@ -18,21 +18,21 @@ const menu = await Menu.new({
       items: [
         await MenuItem.new({
           id: "new",
-          text: "New",
+          text: "New Program",
           action: () => {},
         }),
         await MenuItem.new({
           id: "open",
-          text: "Open",
+          text: "Open Program",
           action: async () => {
             const path = await open({
-              title: "Open a project",
+              title: "Open Program",
               multiple: false,
               directory: false,
               filters: [
                 {
-                  name: "JSON",
-                  extensions: ["json"],
+                  name: "SimLadd Program",
+                  extensions: ["ladd"],
                 },
               ],
               defaultPath: await appDataDir(),
@@ -51,14 +51,14 @@ const menu = await Menu.new({
         }),
         await MenuItem.new({
           id: "save-as",
-          text: "Save as",
+          text: "Save Program as",
           action: async () => {
             const path = await save({
-              title: "Save project as",
+              title: "Save Program as",
               filters: [
                 {
-                  name: "JSON",
-                  extensions: ["json"],
+                  name: "SimLadd Program",
+                  extensions: ["ladd"],
                 },
               ],
               defaultPath: await appDataDir(),
