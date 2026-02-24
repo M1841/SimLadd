@@ -71,6 +71,9 @@ export class RelayNode implements Node {
       }
     });
     address.addEventListener("blur", async () => {
+      if (this.address === address.textContent) {
+        return;
+      }
       let program = LadderDiagram.fromObject(
         (await store.get<Object>("program"))!,
       );
@@ -91,6 +94,23 @@ export class RelayNode implements Node {
     } else {
       icon.textContent = `]${this.isOpen ? " " : "/"}[`;
     }
+    icon.addEventListener("click", async () => {
+      let program = LadderDiagram.fromObject(
+        (await store.get<Object>("program"))!,
+      );
+      program = program.withNode(this.id, {
+        ...this,
+        isOpen: !this.isOpen,
+      });
+      await store.set("program", program.toObject());
+      await store.save();
+      this.isOpen = !this.isOpen;
+      if (this instanceof OutputNode) {
+        icon.textContent = `(${this.isOpen ? " " : "/"})`;
+      } else {
+        icon.textContent = `]${this.isOpen ? " " : "/"}[`;
+      }
+    });
     node.appendChild(icon);
 
     const label = document.createElement("span");
