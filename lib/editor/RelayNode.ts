@@ -1,12 +1,23 @@
+import { LazyStore } from "@tauri-apps/plugin-store";
+const store = new LazyStore("state.json");
+
 import { Node } from "./Node";
+import { LadderDiagram } from "./LadderDiagram";
 import { OutputNode } from "./OutputNode";
 
 export class RelayNode implements Node {
+  id: string;
   address: string;
   label: string;
   isOpen: boolean;
 
-  constructor(address: string, label: string, isOpen: boolean = true) {
+  constructor(
+    id: string,
+    address: string,
+    label: string,
+    isOpen: boolean = true,
+  ) {
+    this.id = id;
     this.address = address;
     this.label = label;
     this.isOpen = isOpen;
@@ -14,6 +25,7 @@ export class RelayNode implements Node {
 
   toObject(): Object {
     return {
+      id: this.id,
       address: this.address,
       label: this.label,
       isOpen: this.isOpen,
@@ -29,18 +41,20 @@ export class RelayNode implements Node {
     const address = entries.find(([key, _]) => key === "address")?.[1];
     const label = entries.find(([key, _]) => key === "label")?.[1];
     const isOpen = entries.find(([key, _]) => key === "isOpen")?.[1];
+    const id = entries.find(([key, _]) => key === "id")?.[1];
 
     if (
       __type === undefined ||
       __type !== "RelayNode" ||
       address === undefined ||
       label === undefined ||
-      isOpen === undefined
+      isOpen === undefined ||
+      id === undefined
     ) {
       throw new Error("Object is not a valid RelayNode");
     }
 
-    return new RelayNode(address, label, isOpen);
+    return new RelayNode(id, address, label, isOpen);
   }
 
   render(): HTMLDivElement {
@@ -56,7 +70,16 @@ export class RelayNode implements Node {
         address.blur();
       }
     });
-    address.addEventListener("blur", () => {
+    address.addEventListener("blur", async () => {
+      let program = LadderDiagram.fromObject(
+        (await store.get<Object>("program"))!,
+      );
+      program = program.withNode(this.id, {
+        ...this,
+        address: address.textContent ?? "",
+      });
+      await store.set("program", program.toObject());
+      await store.save();
       this.address = address.textContent ?? "";
     });
     node.appendChild(address);
@@ -76,10 +99,11 @@ export class RelayNode implements Node {
     node.appendChild(label);
 
     node.draggable = true;
-    node.addEventListener("dragstart", (event) => {
+    node.addEventListener("dragstart", async (event) => {
       node.id = "dragged";
-      event.dataTransfer!.effectAllowed = "move";
       event.dataTransfer!.setData("relay-node", "");
+      await store.set("dragged", { id: this.id, ...this.toObject() });
+      await store.save();
     });
     node.addEventListener("drag", (event) => {
       event.preventDefault();

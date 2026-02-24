@@ -1,13 +1,21 @@
 import { ConjunctiveNode } from "./ConjunctiveNode";
 import { ExpressionNode } from "./ExpressionNode";
 import { getExpressionType } from "./utils";
+import { RelayNode } from "./RelayNode";
 
 export class Network {
+  id: string;
   name: string;
   input: ExpressionNode;
   output: ConjunctiveNode;
 
-  constructor(name: string, input: ExpressionNode, outputs: ConjunctiveNode) {
+  constructor(
+    id: string,
+    name: string,
+    input: ExpressionNode,
+    outputs: ConjunctiveNode,
+  ) {
+    this.id = id;
     this.name = name;
     this.input = input;
     this.output = outputs;
@@ -15,6 +23,7 @@ export class Network {
 
   toObject(): Object {
     return {
+      id: this.id,
       name: this.name,
       input: this.input.toObject(),
       output: this.output.toObject(),
@@ -29,13 +38,15 @@ export class Network {
     const name = entries.find(([key, _]) => key === "name")?.[1];
     const input = entries.find(([key, _]) => key === "input")?.[1];
     const output = entries.find(([key, _]) => key === "output")?.[1];
+    const id = entries.find(([key, _]) => key === "id")?.[1];
 
     if (
       __type === undefined ||
       __type !== "Network" ||
       name === undefined ||
       input === undefined ||
-      output === undefined
+      output === undefined ||
+      id === undefined
     ) {
       throw new Error("Object is not a valid Network");
     }
@@ -43,6 +54,7 @@ export class Network {
     const inputType = getExpressionType(input);
 
     return new Network(
+      id,
       name,
       inputType.fromObject(input),
       ConjunctiveNode.fromObject(output),
@@ -89,5 +101,14 @@ export class Network {
     network.appendChild(nodes);
 
     return network;
+  }
+
+  withNode(id: string, value: RelayNode): Network {
+    return new Network(
+      this.id,
+      this.name,
+      this.input.withNode(id, value),
+      this.output.withNode(id, value),
+    );
   }
 }

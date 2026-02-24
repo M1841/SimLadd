@@ -1,44 +1,52 @@
+import { v4 as uuid } from "uuid";
+
 import { ConjunctiveNode } from "./ConjunctiveNode";
 import { ExpressionNode } from "./ExpressionNode";
 import { Operator } from "./Operator";
 import { getObjectType } from "./utils";
+import { RelayNode } from "./RelayNode";
 
 export class DisjunctiveNode implements ExpressionNode {
+  id: string;
   operator: Operator;
   operands: ConjunctiveNode[];
 
-  constructor(operands: ConjunctiveNode[]) {
+  constructor(id: string, operands: ConjunctiveNode[]) {
+    this.id = id;
     this.operator = Operator.OR;
     this.operands = operands;
   }
 
   toObject(): Object {
     return {
+      id: this.id,
       operator: this.operator,
       operands: this.operands.map((operand) => operand.toObject()),
 
       __type: "DisjunctiveNode",
     };
   }
-
   static fromObject(object: Object): DisjunctiveNode {
     const entries = Object.entries(object);
 
     const __type = entries.find(([key, _]) => key === "__type")?.[1];
     const operator = entries.find(([key, _]) => key === "operator")?.[1];
     const operands = entries.find(([key, _]) => key === "operands")?.[1];
+    const id = entries.find(([key, _]) => key === "id")?.[1];
 
     if (
       __type === undefined ||
       __type !== "DisjunctiveNode" ||
       operator === undefined ||
       operands === undefined ||
-      operands.map === undefined
+      operands.map === undefined ||
+      id === undefined
     ) {
       throw new Error("Object is not a valid DisjunctiveNode");
     }
 
     return new DisjunctiveNode(
+      id,
       operands.map((operand: Object) =>
         getObjectType(operand).fromObject(operand),
       ),
@@ -46,18 +54,25 @@ export class DisjunctiveNode implements ExpressionNode {
   }
 
   render(): HTMLDivElement {
-    const div = document.createElement("div");
-    div.classList.add("disjunctive-node");
+    const node = document.createElement("div");
+    node.classList.add("disjunctive-node");
 
     this.operands.forEach((operand) => {
       if (operand instanceof ConjunctiveNode) {
-        div.appendChild(operand.render());
+        node.appendChild(operand.render());
       } else {
-        div.appendChild(new ConjunctiveNode([operand]).render());
+        node.appendChild(new ConjunctiveNode(uuid(), [operand]).render());
       }
     });
-    div.classList.add(this.operator);
+    node.classList.add(this.operator);
 
-    return div;
+    return node;
+  }
+
+  withNode(id: string, value: RelayNode): DisjunctiveNode {
+    return new DisjunctiveNode(
+      this.id,
+      this.operands.map((operand) => operand.withNode(id, value)),
+    );
   }
 }
