@@ -57,9 +57,10 @@ export class RelayNode implements Node {
     return new RelayNode(id, address, label, isOpen);
   }
 
-  render(): HTMLDivElement {
+  toDiv(): HTMLDivElement {
     const node = document.createElement("div");
     node.classList.add("relay-node");
+    node.id = this.id;
 
     const address = document.createElement("span");
     address.classList.add("node-address");
@@ -79,13 +80,9 @@ export class RelayNode implements Node {
       let program = LadderDiagram.fromObject(
         (await state.get<Object>("program"))!,
       );
-      program = await program.withUpdatedNode({
-        ...this,
-        address: address.textContent ?? "",
-      });
+      program = await program.withUpdatedNode({ ...this });
       await state.set("program", program.toObject());
       await state.save();
-      this.address = address.textContent ?? "";
     });
     node.appendChild(address);
 
@@ -97,22 +94,19 @@ export class RelayNode implements Node {
       icon.textContent = `]${this.isOpen ? " " : "/"}[`;
     }
     icon.addEventListener("click", async () => {
-      let program = LadderDiagram.fromObject(
-        (await state.get<Object>("program"))!,
-      );
-      program = await program.withUpdatedNode({
-        ...this,
-        isOpen: !this.isOpen,
-      });
-      await state.set("program", program.toObject());
-      await state.save();
-
       this.isOpen = !this.isOpen;
       if (this instanceof OutputNode) {
         icon.textContent = `(${this.isOpen ? " " : "/"})`;
       } else {
         icon.textContent = `]${this.isOpen ? " " : "/"}[`;
       }
+
+      let program = LadderDiagram.fromObject(
+        (await state.get<Object>("program"))!,
+      );
+      program = await program.withUpdatedNode({ ...this });
+      await state.set("program", program.toObject());
+      await state.save();
     });
     node.appendChild(icon);
 
@@ -125,7 +119,7 @@ export class RelayNode implements Node {
     node.addEventListener("dragstart", async (event) => {
       node.id = "dragged";
       event.dataTransfer!.setData("relay-node", "");
-      await state.set("dragged", { id: this.id, ...this.toObject() });
+      await state.set("drag.node", { id: this.id, ...this.toObject() });
       await state.save();
     });
     node.addEventListener("drag", (event) => {

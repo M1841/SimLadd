@@ -41,15 +41,15 @@ export class LadderDiagram {
     );
   }
 
-  render(): HTMLDivElement {
-    const diagram = document.createElement("div");
-    diagram.classList.add("ladder-diagram");
+  async render() {
+    const diagram = document.getElementById("ladder-diagram")!;
+    await Promise.all(
+      [...diagram.children].map((child) => diagram.removeChild(child)),
+    );
 
-    this.networks.forEach((network) => {
-      diagram.appendChild(network.render());
-    });
-
-    return diagram;
+    await Promise.all(
+      this.networks.map((network) => diagram.appendChild(network.render())),
+    );
   }
 
   async withUpdatedNode(node: RelayNode): Promise<LadderDiagram> {
@@ -75,9 +75,7 @@ export class LadderDiagram {
 
   static async load(path: string): Promise<LadderDiagram> {
     const decoder = new TextDecoder();
-    const bytes = await readFile(path, {
-      baseDir: BaseDirectory.AppData,
-    });
+    const bytes = await readFile(path);
     const content = decoder.decode(bytes);
     const json = JSON.parse(content);
     return LadderDiagram.fromObject(json);
@@ -86,9 +84,7 @@ export class LadderDiagram {
     const encoder = new TextEncoder();
     const json = JSON.stringify(this.toObject());
     const bytes = encoder.encode(json);
-    await writeFile(path, bytes, {
-      baseDir: BaseDirectory.AppData,
-    });
+    await writeFile(path, bytes);
   }
 
   static empty = new LadderDiagram([

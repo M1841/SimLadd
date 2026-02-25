@@ -1,9 +1,9 @@
-.editor {
+#editor {
   /* width: 80%; */
   width: 100%;
 }
 
-.ladder-diagram {
+#ladder-diagram {
   display: flex;
   flex-direction: column;
   gap: 2em;

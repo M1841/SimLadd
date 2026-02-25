@@ -7,12 +7,7 @@ export class Editor {
     this.diagram = diagram;
   }
 
-  render(): HTMLDivElement {
-    const editor = document.createElement("div");
-    editor.classList.add("editor");
-
-    editor.appendChild(this.diagram.render());
-
-    return editor;
+  async render() {
+    await this.diagram.render();
   }
 }

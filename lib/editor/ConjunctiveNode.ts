@@ -60,12 +60,13 @@ export class ConjunctiveNode implements ExpressionNode {
     );
   }
 
-  render(): HTMLDivElement {
+  toDiv(): HTMLDivElement {
     const node = document.createElement("div");
     node.classList.add("conjunctive-node");
+    node.id = this.id;
 
     this.operands.forEach((operand) => {
-      node.appendChild(operand.render());
+      node.appendChild(operand.toDiv());
     });
 
     node.addEventListener("dragenter", (event) => {
@@ -135,6 +136,10 @@ export class ConjunctiveNode implements ExpressionNode {
         new RelayNode(node.id, node.address, node.label, node.isOpen),
       ]);
     }
+    console.log(
+      this.operands.map((op) => op.id),
+      node.id,
+    );
     return new ConjunctiveNode(
       this.id,
       this.operands.filter((operand) => operand.id !== node.id),

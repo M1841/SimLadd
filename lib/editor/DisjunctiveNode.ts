@@ -53,15 +53,16 @@ export class DisjunctiveNode implements ExpressionNode {
     );
   }
 
-  render(): HTMLDivElement {
+  toDiv(): HTMLDivElement {
     const node = document.createElement("div");
     node.classList.add("disjunctive-node");
+    node.id = this.id;
 
     this.operands.forEach((operand) => {
       if (operand instanceof ConjunctiveNode) {
-        node.appendChild(operand.render());
+        node.appendChild(operand.toDiv());
       } else {
-        node.appendChild(new ConjunctiveNode(uuid(), [operand]).render());
+        node.appendChild(new ConjunctiveNode(uuid(), [operand]).toDiv());
       }
     });
     node.classList.add(this.operator);

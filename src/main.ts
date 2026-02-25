@@ -7,18 +7,17 @@ import { Editor } from "../lib/editor/Editor";
 // import { Workspace } from "../lib/workspace/Workspace";
 
 try {
-  const body = document.getElementsByTagName("body")[0];
+  const program = LadderDiagram.empty;
+  await state.set("program", program.toObject());
 
-  const example = LadderDiagram.example;
-  // const example = await LadderDiagram.load("example.ladd");
-  await state.set("program", example.toObject());
-  await example.save("example.ladd");
+  await LadderDiagram.example.save(
+    "C:\\Users\\mihai.muresan\\AppData\\Roaming\\com.simladd.app\\example.ladd",
+  );
 
-  await Menu.setAsAppMenu();
-  const editor = new Editor(example);
-  // const workspace = new Workspace();
-  body.appendChild(editor.render());
-  // body.appendChild(workspace.render());
+  await Menu.render();
+
+  const editor = new Editor(program);
+  await editor.render();
 } catch (error) {
   alert(error);
 }

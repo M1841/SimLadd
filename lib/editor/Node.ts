@@ -1,5 +1,5 @@
 export interface Node {
   id: string;
-  render(): HTMLDivElement;
+  toDiv(): HTMLDivElement;
   toObject(): Object;
 }

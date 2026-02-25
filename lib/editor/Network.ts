@@ -64,6 +64,7 @@ export class Network {
   render(): HTMLDivElement {
     const network = document.createElement("div");
     network.classList.add("network");
+    network.id = this.id;
 
     const header = document.createElement("div");
     header.classList.add("network-header");
@@ -82,10 +83,10 @@ export class Network {
     const nodes = document.createElement("div");
     nodes.classList.add("network-nodes");
 
-    const inputNodes = this.input.render();
+    const inputNodes = this.input.toDiv();
     nodes.appendChild(inputNodes);
 
-    const outputNodes = this.output.render();
+    const outputNodes = this.output.toDiv();
     nodes.appendChild(outputNodes);
 
     header.addEventListener("click", () => {
