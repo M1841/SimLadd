@@ -7,5 +7,9 @@ import { DisjunctiveNode } from "./DisjunctiveNode";
 export interface ExpressionNode extends Node {
   operator: Operator;
   operands: Node[];
-  withNode(id: string, value: RelayNode): ConjunctiveNode | DisjunctiveNode;
+  withUpdatedNode(node: RelayNode): Promise<ConjunctiveNode | DisjunctiveNode>;
+  withMovedNode(
+    node: RelayNode,
+    destinationId: string,
+  ): Promise<ConjunctiveNode | DisjunctiveNode>;
 }

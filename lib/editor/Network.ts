@@ -103,12 +103,22 @@ export class Network {
     return network;
   }
 
-  withNode(id: string, value: RelayNode): Network {
-    return new Network(
-      this.id,
-      this.name,
-      this.input.withNode(id, value),
-      this.output.withNode(id, value),
-    );
+  async withUpdatedNode(node: RelayNode): Promise<Network> {
+    const [input, output] = await Promise.all([
+      this.input.withUpdatedNode(node),
+      this.output.withUpdatedNode(node),
+    ]);
+    return new Network(this.id, this.name, input, output);
+  }
+
+  async withMovedNode(
+    node: RelayNode,
+    destinationId: string,
+  ): Promise<Network> {
+    const [input, output] = await Promise.all([
+      this.input.withMovedNode(node, destinationId),
+      this.output.withMovedNode(node, destinationId),
+    ]);
+    return new Network(this.id, this.name, input, output);
   }
 }

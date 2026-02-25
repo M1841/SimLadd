@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-const store = new LazyStore("state.json");
+const state = new LazyStore("state.json");
 
 import { Menu } from "../lib/menu/Menu";
 import { LadderDiagram } from "../lib/editor/LadderDiagram";
@@ -11,7 +11,7 @@ try {
 
   const example = LadderDiagram.example;
   // const example = await LadderDiagram.load("example.ladd");
-  await store.set("program", example.toObject());
+  await state.set("program", example.toObject());
   await example.save("example.ladd");
 
   await Menu.setAsAppMenu();

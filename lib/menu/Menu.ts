@@ -9,7 +9,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { exit } from "@tauri-apps/plugin-process";
 import { load } from "@tauri-apps/plugin-store";
 
-const store = await load("store.json");
+const state = await load("state.json");
 
 const menu = await Menu.new({
   items: [
@@ -37,7 +37,7 @@ const menu = await Menu.new({
               ],
               defaultPath: await appDataDir(),
             });
-            await store.set("project-path", { value: path });
+            await state.set("project-path", { value: path });
           },
         }),
         await PredefinedMenuItem.new({
@@ -63,7 +63,7 @@ const menu = await Menu.new({
               ],
               defaultPath: await appDataDir(),
             });
-            await store.set("project-path", { value: path });
+            await state.set("project-path", { value: path });
           },
         }),
         await PredefinedMenuItem.new({

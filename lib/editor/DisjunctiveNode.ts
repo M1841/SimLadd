@@ -69,10 +69,26 @@ export class DisjunctiveNode implements ExpressionNode {
     return node;
   }
 
-  withNode(id: string, value: RelayNode): DisjunctiveNode {
+  async withUpdatedNode(node: RelayNode): Promise<DisjunctiveNode> {
     return new DisjunctiveNode(
       this.id,
-      this.operands.map((operand) => operand.withNode(id, value)),
+      await Promise.all(
+        this.operands.map((operand) => operand.withUpdatedNode(node)),
+      ),
+    );
+  }
+
+  async withMovedNode(
+    node: RelayNode,
+    destinationId: string,
+  ): Promise<DisjunctiveNode> {
+    return new DisjunctiveNode(
+      this.id,
+      await Promise.all(
+        this.operands.map((operand) =>
+          operand.withMovedNode(node, destinationId),
+        ),
+      ),
     );
   }
 }

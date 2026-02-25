@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-const store = new LazyStore("state.json");
+const state = new LazyStore("state.json");
 
 import { Node } from "./Node";
 import { LadderDiagram } from "./LadderDiagram";
@@ -74,15 +74,17 @@ export class RelayNode implements Node {
       if (this.address === address.textContent) {
         return;
       }
+      this.address = address.textContent ?? "";
+
       let program = LadderDiagram.fromObject(
-        (await store.get<Object>("program"))!,
+        (await state.get<Object>("program"))!,
       );
-      program = program.withNode(this.id, {
+      program = await program.withUpdatedNode({
         ...this,
         address: address.textContent ?? "",
       });
-      await store.set("program", program.toObject());
-      await store.save();
+      await state.set("program", program.toObject());
+      await state.save();
       this.address = address.textContent ?? "";
     });
     node.appendChild(address);
@@ -96,14 +98,15 @@ export class RelayNode implements Node {
     }
     icon.addEventListener("click", async () => {
       let program = LadderDiagram.fromObject(
-        (await store.get<Object>("program"))!,
+        (await state.get<Object>("program"))!,
       );
-      program = program.withNode(this.id, {
+      program = await program.withUpdatedNode({
         ...this,
         isOpen: !this.isOpen,
       });
-      await store.set("program", program.toObject());
-      await store.save();
+      await state.set("program", program.toObject());
+      await state.save();
+
       this.isOpen = !this.isOpen;
       if (this instanceof OutputNode) {
         icon.textContent = `(${this.isOpen ? " " : "/"})`;
@@ -122,8 +125,8 @@ export class RelayNode implements Node {
     node.addEventListener("dragstart", async (event) => {
       node.id = "dragged";
       event.dataTransfer!.setData("relay-node", "");
-      await store.set("dragged", { id: this.id, ...this.toObject() });
-      await store.save();
+      await state.set("dragged", { id: this.id, ...this.toObject() });
+      await state.save();
     });
     node.addEventListener("drag", (event) => {
       event.preventDefault();

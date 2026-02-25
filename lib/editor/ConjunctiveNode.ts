@@ -1,6 +1,7 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-const store = new LazyStore("state.json");
+const state = new LazyStore("state.json");
 
+import { LadderDiagram } from "./LadderDiagram";
 import { DisjunctiveNode } from "./DisjunctiveNode";
 import { ExpressionNode } from "./ExpressionNode";
 import { RelayNode } from "./RelayNode";
@@ -82,38 +83,61 @@ export class ConjunctiveNode implements ExpressionNode {
       draggedElement.remove();
       node.appendChild(draggedElement);
 
-      await store.set("destination-id", this.id);
-      await store.save();
       const draggedNode = RelayNode.fromObject(
-        (await store.get<Object>("dragged"))!,
+        (await state.get<Object>("dragged"))!,
       );
       this.operands.push(draggedNode);
+
+      let program = LadderDiagram.fromObject(
+        (await state.get<Object>("program"))!,
+      );
+      program = await program.withMovedNode(draggedNode, this.id);
+      await state.set("program", program.toObject());
+      await state.save();
     });
 
     return node;
   }
 
-  withNode(id: string, value: RelayNode): ConjunctiveNode {
+  async withUpdatedNode(node: RelayNode): Promise<ConjunctiveNode> {
     return new ConjunctiveNode(
       this.id,
-      this.operands.map((operand) => {
-        if (operand.id === id) {
-          if (operand instanceof RelayNode) {
-            return new RelayNode(
-              operand.id,
-              value.address,
-              value.label,
-              value.isOpen,
-            );
+      await Promise.all(
+        this.operands.map(async (operand) => {
+          if (operand.id === node.id) {
+            if (operand instanceof RelayNode) {
+              return new RelayNode(
+                node.id,
+                node.address,
+                node.label,
+                node.isOpen,
+              );
+            } else {
+              throw new Error(
+                "Attempted applying a RelayNode value to a DisjunctiveNode",
+              );
+            }
           } else {
-            throw new Error(
-              "Attempted applying a RelayNode value to a DisjunctiveNode",
-            );
+            return operand;
           }
-        } else {
-          return operand;
-        }
-      }),
+        }),
+      ),
+    );
+  }
+
+  async withMovedNode(
+    node: RelayNode,
+    destinationId: string,
+  ): Promise<ConjunctiveNode> {
+    if (this.id === destinationId) {
+      return new ConjunctiveNode(this.id, [
+        ...this.operands,
+        new RelayNode(node.id, node.address, node.label, node.isOpen),
+      ]);
+    }
+    return new ConjunctiveNode(
+      this.id,
+      this.operands.filter((operand) => operand.id !== node.id),
     );
   }
 }

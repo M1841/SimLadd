@@ -1,7 +1,6 @@
 import { BaseDirectory, writeFile, readFile } from "@tauri-apps/plugin-fs";
 import { v4 as uuid } from "uuid";
 
-import { Node } from "./Node";
 import { Network } from "./Network";
 import { ConjunctiveNode } from "./ConjunctiveNode";
 import { DisjunctiveNode } from "./DisjunctiveNode";
@@ -53,9 +52,24 @@ export class LadderDiagram {
     return diagram;
   }
 
-  withNode(id: string, value: RelayNode): LadderDiagram {
+  async withUpdatedNode(node: RelayNode): Promise<LadderDiagram> {
     return new LadderDiagram(
-      this.networks.map((network) => network.withNode(id, value)),
+      await Promise.all(
+        this.networks.map((network) => network.withUpdatedNode(node)),
+      ),
+    );
+  }
+
+  async withMovedNode(
+    node: RelayNode,
+    destinationId: string,
+  ): Promise<LadderDiagram> {
+    return new LadderDiagram(
+      await Promise.all(
+        this.networks.map((network) =>
+          network.withMovedNode(node, destinationId),
+        ),
+      ),
     );
   }
 
@@ -77,31 +91,39 @@ export class LadderDiagram {
     });
   }
 
+  static empty = new LadderDiagram([
+    new Network(
+      uuid(),
+      "Network 1",
+      new ConjunctiveNode(uuid(), []),
+      new ConjunctiveNode(uuid(), []),
+    ),
+  ]);
   static example = new LadderDiagram([
-    // new Network(
-    //   uuid(),
-    //   "Network 1",
-    //   new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
-    //   new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
-    // ),
-    // new Network(
-    //   uuid(),
-    //   "Network 2",
-    //   new ConjunctiveNode(uuid(), [
-    //     new RelayNode(uuid(), "%I0.0", "START"),
-    //     new RelayNode(uuid(), "%I0.1", "STOP", false),
-    //   ]),
-    //   new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
-    // ),
-    // new Network(
-    //   uuid(),
-    //   "Network 3",
-    //   new DisjunctiveNode(uuid(), [
-    //     new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
-    //     new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%Q0.0", "LED")]),
-    //   ]),
-    //   new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
-    // ),
+    new Network(
+      uuid(),
+      "Network 1",
+      new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
+      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+    ),
+    new Network(
+      uuid(),
+      "Network 2",
+      new ConjunctiveNode(uuid(), [
+        new RelayNode(uuid(), "%I0.0", "START"),
+        new RelayNode(uuid(), "%I0.1", "STOP", false),
+      ]),
+      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+    ),
+    new Network(
+      uuid(),
+      "Network 3",
+      new DisjunctiveNode(uuid(), [
+        new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
+        new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%Q0.0", "LED")]),
+      ]),
+      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+    ),
     new Network(
       uuid(),
       "Network 4",
