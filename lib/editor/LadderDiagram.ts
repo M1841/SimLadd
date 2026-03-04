@@ -75,11 +75,11 @@ export class LadderDiagram {
   }
 
   static async load(path: string): Promise<LadderDiagram> {
+    Logs.info(`Loading program from ${path}`);
     const decoder = new TextDecoder();
     const bytes = await readFile(path);
     const content = decoder.decode(bytes);
     const json = JSON.parse(content);
-    Logs.info(`Loading program from ${path}`);
     return LadderDiagram.fromObject(json);
   }
   async save(path: string, quiet: boolean = false): Promise<void> {

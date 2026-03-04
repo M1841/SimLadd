@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-const state = new LazyStore("state.json");
+const state = new LazyStore("data/state.json");
 
 import { LadderDiagram } from "./LadderDiagram";
 import { DisjunctiveNode } from "./DisjunctiveNode";
@@ -91,6 +91,7 @@ export class ConjunctiveNode implements ExpressionNode {
         (await state.get<Object>("drag.node"))!,
       );
       this.operands.push(draggedNode);
+      await state.delete("drag.node");
 
       let program = LadderDiagram.fromObject(
         (await state.get<Object>("program"))!,

@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-const state = new LazyStore("state.json");
+const state = new LazyStore("data/state.json");
 
 import { Node } from "./Node";
 import { LadderDiagram } from "./LadderDiagram";

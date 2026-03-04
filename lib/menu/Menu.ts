@@ -9,7 +9,8 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { exit } from "@tauri-apps/plugin-process";
 import { LazyStore } from "@tauri-apps/plugin-store";
 import { LadderDiagram } from "../editor/LadderDiagram";
-const state = new LazyStore("state.json");
+import { Logs } from "../logs/Logs";
+const state = new LazyStore("data/state.json");
 
 export class Menu {
   static async render() {
@@ -47,13 +48,17 @@ export class Menu {
                   ],
                   defaultPath: await appDataDir(),
                 });
-                const program = await LadderDiagram.load(path!);
-                await Promise.all([
-                  state.set("program", program.toObject()),
-                  state.set("program-path", path),
-                  program.render(),
-                ]);
-                await state.save();
+                try {
+                  const program = await LadderDiagram.load(path!);
+                  await Promise.all([
+                    state.set("program", program.toObject()),
+                    state.set("program-path", path),
+                    program.render(),
+                  ]);
+                  await state.save();
+                } catch (error) {
+                  Logs.error("Invalid ladder program");
+                }
               },
             }),
             await PredefinedMenuItem.new({
@@ -89,6 +94,44 @@ export class Menu {
                   program.save(path!),
                 ]);
               },
+            }),
+            await PredefinedMenuItem.new({
+              text: "separator",
+              item: "Separator",
+            }),
+            await Submenu.new({
+              id: "workspace",
+              text: "Workspace",
+              items: [
+                await MenuItem.new({
+                  id: "load-workspace",
+                  text: "Load",
+                  action: () => {},
+                }),
+                await PredefinedMenuItem.new({
+                  text: "separator",
+                  item: "Separator",
+                }),
+                await MenuItem.new({
+                  id: "save-workspace",
+                  text: "Save",
+                  action: () => {},
+                }),
+                await MenuItem.new({
+                  id: "save-workspace-as",
+                  text: "Save as",
+                  action: () => {},
+                }),
+                await PredefinedMenuItem.new({
+                  text: "separator",
+                  item: "Separator",
+                }),
+                await MenuItem.new({
+                  id: "clear-workspace",
+                  text: "Clear",
+                  action: () => {},
+                }),
+              ],
             }),
             await PredefinedMenuItem.new({
               text: "separator",
