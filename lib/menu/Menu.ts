@@ -22,7 +22,7 @@ export class Menu {
               id: "new",
               text: "New Program",
               action: async () => {
-                const program = LadderDiagram.empty;
+                const program = LadderDiagram.empty();
                 await Promise.all([
                   state.set("program", program.toObject()),
                   state.delete("program-path"),
@@ -86,7 +86,7 @@ export class Menu {
                 );
                 await Promise.all([
                   state.set("program-path", path),
-                  program.save(path),
+                  program.save(path!),
                 ]);
               },
             }),

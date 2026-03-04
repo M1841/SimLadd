@@ -1,0 +1,18 @@
+#logs {
+  border-top: 1px var(--color-text-muted) solid;
+  height: 13em;
+  padding: 0.5em;
+  overflow-y: scroll;
+}
+
+.message {
+  font-family: var(--font-mono);
+}
+
+.message.ERROR {
+  color: #fca5a5;
+}
+
+.message.WARN {
+  color: #fde68a;
+}

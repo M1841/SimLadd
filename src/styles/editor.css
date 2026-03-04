@@ -1,13 +1,16 @@
 #editor {
   /* width: 80%; */
   width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  padding-bottom: 5em;
 }
 
 #ladder-diagram {
   display: flex;
   flex-direction: column;
   gap: 2em;
-  padding: 1rem;
+  padding: 1em;
 }
 
 .network {

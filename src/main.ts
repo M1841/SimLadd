@@ -1,23 +1,23 @@
+import { appDataDir, join } from "@tauri-apps/api/path";
 import { LazyStore } from "@tauri-apps/plugin-store";
 const state = new LazyStore("state.json");
 
 import { Menu } from "../lib/menu/Menu";
 import { LadderDiagram } from "../lib/editor/LadderDiagram";
 import { Editor } from "../lib/editor/Editor";
+import { Logs } from "../lib/logs/Logs";
 // import { Workspace } from "../lib/workspace/Workspace";
 
 try {
-  const program = LadderDiagram.empty;
-  await state.set("program", program.toObject());
-
-  await LadderDiagram.example.save(
-    "C:\\Users\\mihai.muresan\\AppData\\Roaming\\com.simladd.app\\example.ladd",
-  );
-
-  await Menu.render();
-
-  const editor = new Editor(program);
-  await editor.render();
+  Logs.info("Simladd started successfully");
+  const program = LadderDiagram.empty();
+  const examplePath = await join(await appDataDir(), "example.ladd");
+  await Promise.all([
+    state.set("program", program.toObject()),
+    LadderDiagram.example.save(examplePath, true),
+    Menu.render(),
+    new Editor(program).render(),
+  ]);
 } catch (error) {
-  alert(error);
+  Logs.error(error as string);
 }

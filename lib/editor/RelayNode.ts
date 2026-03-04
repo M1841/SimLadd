@@ -4,6 +4,7 @@ const state = new LazyStore("state.json");
 import { Node } from "./Node";
 import { LadderDiagram } from "./LadderDiagram";
 import { OutputNode } from "./OutputNode";
+import { Logs } from "../logs/Logs";
 
 export class RelayNode implements Node {
   id: string;
@@ -51,7 +52,7 @@ export class RelayNode implements Node {
       isOpen === undefined ||
       id === undefined
     ) {
-      throw new Error("Object is not a valid RelayNode");
+      throw new Error(Logs.error("Object is not a valid RelayNode"));
     }
 
     return new RelayNode(id, address, label, isOpen);

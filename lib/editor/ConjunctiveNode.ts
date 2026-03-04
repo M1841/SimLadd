@@ -7,6 +7,7 @@ import { ExpressionNode } from "./ExpressionNode";
 import { RelayNode } from "./RelayNode";
 import { Operator } from "./Operator";
 import { getObjectType } from "./utils";
+import { Logs } from "../logs/Logs";
 
 export class ConjunctiveNode implements ExpressionNode {
   id: string;
@@ -16,7 +17,9 @@ export class ConjunctiveNode implements ExpressionNode {
   constructor(id: string, operands: (RelayNode | ExpressionNode)[]) {
     if (operands.filter((o) => o instanceof DisjunctiveNode).length > 1) {
       throw new Error(
-        "A ConjunctiveNode containing multiple DisjunctiveNodes is currently not supported",
+        Logs.error(
+          "A ConjunctiveNode containing multiple DisjunctiveNodes is currently not supported",
+        ),
       );
     }
     this.id = id;
@@ -49,7 +52,7 @@ export class ConjunctiveNode implements ExpressionNode {
       operands.map === undefined ||
       id === undefined
     ) {
-      throw new Error("Object is not a valid ConjunctiveNode");
+      throw new Error(Logs.error("Object is not a valid ConjunctiveNode"));
     }
 
     return new ConjunctiveNode(
@@ -85,7 +88,7 @@ export class ConjunctiveNode implements ExpressionNode {
       node.appendChild(draggedElement);
 
       const draggedNode = RelayNode.fromObject(
-        (await state.get<Object>("dragged"))!,
+        (await state.get<Object>("drag.node"))!,
       );
       this.operands.push(draggedNode);
 
@@ -115,7 +118,9 @@ export class ConjunctiveNode implements ExpressionNode {
               );
             } else {
               throw new Error(
-                "Attempted applying a RelayNode value to a DisjunctiveNode",
+                Logs.error(
+                  "Attempted applying a RelayNode value to a DisjunctiveNode",
+                ),
               );
             }
           } else {
@@ -136,10 +141,6 @@ export class ConjunctiveNode implements ExpressionNode {
         new RelayNode(node.id, node.address, node.label, node.isOpen),
       ]);
     }
-    console.log(
-      this.operands.map((op) => op.id),
-      node.id,
-    );
     return new ConjunctiveNode(
       this.id,
       this.operands.filter((operand) => operand.id !== node.id),

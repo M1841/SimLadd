@@ -1,4 +1,4 @@
-import { BaseDirectory, writeFile, readFile } from "@tauri-apps/plugin-fs";
+import { writeFile, readFile } from "@tauri-apps/plugin-fs";
 import { v4 as uuid } from "uuid";
 
 import { Network } from "./Network";
@@ -6,6 +6,7 @@ import { ConjunctiveNode } from "./ConjunctiveNode";
 import { DisjunctiveNode } from "./DisjunctiveNode";
 import { OutputNode } from "./OutputNode";
 import { RelayNode } from "./RelayNode";
+import { Logs } from "../logs/Logs";
 
 export class LadderDiagram {
   networks: Network[];
@@ -33,7 +34,7 @@ export class LadderDiagram {
       networks === undefined ||
       networks.map === undefined
     ) {
-      throw new Error("Object is not a valid LadderDiagram");
+      throw new Error(Logs.error("Object is not a valid LadderDiagram"));
     }
 
     return new LadderDiagram(
@@ -78,23 +79,30 @@ export class LadderDiagram {
     const bytes = await readFile(path);
     const content = decoder.decode(bytes);
     const json = JSON.parse(content);
+    Logs.info(`Loading program from ${path}`);
     return LadderDiagram.fromObject(json);
   }
-  async save(path: string): Promise<void> {
+  async save(path: string, quiet: boolean = false): Promise<void> {
     const encoder = new TextEncoder();
     const json = JSON.stringify(this.toObject());
     const bytes = encoder.encode(json);
     await writeFile(path, bytes);
+    if (!quiet) {
+      Logs.info(`Saving program at ${path}`);
+    }
   }
 
-  static empty = new LadderDiagram([
-    new Network(
-      uuid(),
-      "Network 1",
-      new ConjunctiveNode(uuid(), []),
-      new ConjunctiveNode(uuid(), []),
-    ),
-  ]);
+  static empty(): LadderDiagram {
+    Logs.info("Loading empty LadderDiagram");
+    return new LadderDiagram([
+      new Network(
+        uuid(),
+        "Network 1",
+        new ConjunctiveNode(uuid(), []),
+        new ConjunctiveNode(uuid(), []),
+      ),
+    ]);
+  }
   static example = new LadderDiagram([
     new Network(
       uuid(),
