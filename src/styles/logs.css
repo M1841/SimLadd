@@ -1,5 +1,5 @@
 #logs {
-  border-top: 1px var(--color-text-muted) solid;
+  border-top: 1px solid var(--color-border);
   height: 13em;
   padding: 0.5em;
   overflow-y: scroll;

@@ -6,7 +6,7 @@ import { Menu } from "../lib/menu/Menu";
 import { LadderDiagram } from "../lib/editor/LadderDiagram";
 import { Editor } from "../lib/editor/Editor";
 import { Logs } from "../lib/logs/Logs";
-// import { Workspace } from "../lib/workspace/Workspace";
+import { Workspace } from "../lib/workspace/Workspace";
 
 try {
   Logs.info("Simladd started successfully");
@@ -17,6 +17,7 @@ try {
     LadderDiagram.example.save(examplePath, true),
     Menu.render(),
     new Editor(program).render(),
+    new Workspace().render(),
   ]);
 } catch (error) {
   Logs.error(error as string);

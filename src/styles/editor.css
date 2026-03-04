@@ -1,6 +1,5 @@
 #editor {
-  /* width: 80%; */
-  width: 100%;
+  width: calc(100vw - 18em);
   height: 100%;
   overflow-y: scroll;
   padding-bottom: 5em;

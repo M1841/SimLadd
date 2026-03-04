@@ -1,10 +1,38 @@
-.workspace {
-  width: 20%;
-  border-left: 1px solid #303030;
+#workspace {
+  width: 19em;
+  height: 100%;
+  overflow-y: scroll;
+  border-left: 1px solid var(--color-border);
+  overflow-y: hidden;
 }
 
-td,
-th {
-  height: 1em;
-  line-height: 1em;
+#workspace .header {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+}
+
+#workspace .header {
+  font-weight: 500;
+}
+
+#workspace span {
+  padding: 0.25em 0.5em;
+}
+
+.address {
+  border-right: 1px solid var(--color-border);
+  width: 5em;
+}
+.label {
+  border-right: 1px solid var(--color-border);
+  width: 8em;
+}
+.type {
+  width: 5em;
+}
+
+.variable {
+  display: flex;
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--color-border);
 }
