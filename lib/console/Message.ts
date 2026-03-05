@@ -14,7 +14,7 @@ export class Message {
   render(): HTMLParagraphElement {
     const message = document.createElement("p");
     message.classList.add("message", this.severity);
-    message.textContent = `${this.time.toLocaleString()}: [${this.severity}] ${this.text}`;
+    message.textContent = `${this.time.toLocaleTimeString()}: [${this.severity}] ${this.text}`;
     return message;
   }
 }

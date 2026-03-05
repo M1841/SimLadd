@@ -4,13 +4,13 @@ import {
   PredefinedMenuItem,
   Submenu,
 } from "@tauri-apps/api/menu";
-import { appDataDir } from "@tauri-apps/api/path";
-import { open, save } from "@tauri-apps/plugin-dialog";
 import { exit } from "@tauri-apps/plugin-process";
 import { LazyStore } from "@tauri-apps/plugin-store";
-import { LadderDiagram } from "../editor/LadderDiagram";
-import { Console } from "../console/Console";
 const state = new LazyStore("data/state.json");
+
+import { Console } from "../console/Console";
+import { Workspace } from "../workspace/Workspace";
+import * as Program from "./Program";
 
 export class Menu {
   static async render() {
@@ -21,45 +21,13 @@ export class Menu {
           items: [
             await MenuItem.new({
               id: "new",
-              text: "New Program",
-              action: async () => {
-                const program = LadderDiagram.empty();
-                await Promise.all([
-                  state.set("program", program.toObject()),
-                  state.delete("program-path"),
-                  program.render(),
-                ]);
-                await state.save();
-              },
+              text: "New Program\tCtrl+N",
+              action: Program.init,
             }),
             await MenuItem.new({
               id: "open",
-              text: "Open Program",
-              action: async () => {
-                const path = await open({
-                  title: "Open Program",
-                  multiple: false,
-                  directory: false,
-                  filters: [
-                    {
-                      name: "SimLadd Program",
-                      extensions: ["ladd"],
-                    },
-                  ],
-                  defaultPath: await appDataDir(),
-                });
-                try {
-                  const program = await LadderDiagram.load(path!);
-                  await Promise.all([
-                    state.set("program", program.toObject()),
-                    state.set("program-path", path),
-                    program.render(),
-                  ]);
-                  await state.save();
-                } catch (error) {
-                  Console.error("Invalid ladder program");
-                }
-              },
+              text: "Open Program\tCtrl+O",
+              action: Program.open,
             }),
             await PredefinedMenuItem.new({
               text: "separator",
@@ -67,33 +35,13 @@ export class Menu {
             }),
             await MenuItem.new({
               id: "save",
-              text: "Save",
-              action: () => {},
+              text: "Save\tCtrl+S",
+              action: Program.save,
             }),
             await MenuItem.new({
               id: "save-as",
-              text: "Save Program as",
-              action: async () => {
-                const path = await save({
-                  title: "Save Program as",
-                  filters: [
-                    {
-                      name: "SimLadd Program",
-                      extensions: ["ladd"],
-                    },
-                  ],
-                  defaultPath:
-                    (await state.get<string>("program-path")) ??
-                    (await appDataDir()),
-                });
-                const program = LadderDiagram.fromObject(
-                  (await state.get<Object>("program"))!,
-                );
-                await Promise.all([
-                  state.set("program-path", path),
-                  program.save(path!),
-                ]);
-              },
+              text: "Save Program as\tCtrl+Shift+S",
+              action: Program.saveAs,
             }),
             await PredefinedMenuItem.new({
               text: "separator",
@@ -139,7 +87,7 @@ export class Menu {
             }),
             await MenuItem.new({
               id: "exit",
-              text: "Exit",
+              text: "Exit\tAlt+F4",
               action: async () => {
                 await exit(0);
               },
@@ -152,7 +100,18 @@ export class Menu {
         }),
         await Submenu.new({
           text: "View",
-          items: [],
+          items: [
+            await MenuItem.new({
+              id: "toggle-workspace",
+              text: "Toggle Workspace\tCtrl+B",
+              action: () => Workspace.toggle(),
+            }),
+            await MenuItem.new({
+              id: "toggle-console",
+              text: "Toggle Console\tCtrl+J",
+              action: () => Console.toggle(),
+            }),
+          ],
         }),
         await Submenu.new({
           text: "Help",
@@ -162,5 +121,39 @@ export class Menu {
     });
 
     await menu.setAsAppMenu();
+
+    window.addEventListener("keydown", async (event) => {
+      if (event.getModifierState("Control")) {
+        if (event.getModifierState("Shift")) {
+          switch (event.key.toUpperCase()) {
+            case "S":
+              Program.saveAs();
+              break;
+          }
+        } else {
+          switch (event.key.toUpperCase()) {
+            case "N":
+              Program.init();
+              break;
+            case "O":
+              Program.open();
+              break;
+            case "S":
+              if (!(await state.get("program-path"))) {
+                Program.saveAs();
+              } else {
+                Program.save();
+              }
+              break;
+            case "B":
+              Workspace.toggle();
+              break;
+            case "J":
+              Console.toggle();
+              break;
+          }
+        }
+      }
+    });
   }
 }

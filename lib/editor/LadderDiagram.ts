@@ -1,5 +1,7 @@
 import { writeFile, readFile } from "@tauri-apps/plugin-fs";
 import { v4 as uuid } from "uuid";
+import { LazyStore } from "@tauri-apps/plugin-store";
+const state = new LazyStore("data/state.json");
 
 import { Network } from "./Network";
 import { ConjunctiveNode } from "./ConjunctiveNode";
@@ -7,6 +9,7 @@ import { DisjunctiveNode } from "./DisjunctiveNode";
 import { OutputNode } from "./OutputNode";
 import { RelayNode } from "./RelayNode";
 import { Console } from "../console/Console";
+import { appDataDir, join } from "@tauri-apps/api/path";
 
 export class LadderDiagram {
   networks: Network[];
@@ -14,6 +17,7 @@ export class LadderDiagram {
   constructor(networks: Network[]) {
     this.networks = networks;
   }
+
   toObject(): Object {
     return {
       networks: this.networks.map((network) => network.toObject()),
@@ -21,7 +25,6 @@ export class LadderDiagram {
       __type: "LadderDiagram",
     };
   }
-
   static fromObject(object: Object): LadderDiagram {
     const entries = Object.entries(object);
 
@@ -60,7 +63,6 @@ export class LadderDiagram {
       ),
     );
   }
-
   async withMovedNode(
     node: RelayNode,
     destinationId: string,
@@ -75,7 +77,7 @@ export class LadderDiagram {
   }
 
   static async load(path: string): Promise<LadderDiagram> {
-    // Console.info(`Loading program from ${path}`);
+    Console.info(`opening program from ${path}`);
     const decoder = new TextDecoder();
     const bytes = await readFile(path);
     const content = decoder.decode(bytes);
@@ -83,17 +85,24 @@ export class LadderDiagram {
     return LadderDiagram.fromObject(json);
   }
   async save(path: string, quiet: boolean = false): Promise<void> {
+    if (path == (await join(await appDataDir(), "template", "example.ladd"))) {
+      Console.error(
+        "cannot overwrite the builtin example program, save under a different name or path",
+      );
+      return;
+    }
     const encoder = new TextEncoder();
     const json = JSON.stringify(this.toObject());
     const bytes = encoder.encode(json);
     await writeFile(path, bytes);
     if (!quiet) {
-      // Console.info(`Saving program at ${path}`);
+      Console.info(`saving program at ${path}`);
     }
   }
 
-  static empty(): LadderDiagram {
-    // Console.info("Loading empty LadderDiagram");
+  static async empty(): Promise<LadderDiagram> {
+    Console.info("initializing program");
+    await state.delete("program-path");
     return new LadderDiagram([
       new Network(
         uuid(),
