@@ -9,7 +9,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { exit } from "@tauri-apps/plugin-process";
 import { LazyStore } from "@tauri-apps/plugin-store";
 import { LadderDiagram } from "../editor/LadderDiagram";
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 const state = new LazyStore("data/state.json");
 
 export class Menu {
@@ -57,7 +57,7 @@ export class Menu {
                   ]);
                   await state.save();
                 } catch (error) {
-                  Logs.error("Invalid ladder program");
+                  Console.error("Invalid ladder program");
                 }
               },
             }),

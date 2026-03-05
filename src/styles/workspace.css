@@ -4,6 +4,7 @@
   overflow-y: scroll;
   border-left: 1px solid var(--color-border);
   overflow-y: hidden;
+  background-color: var(--color-bg-darker);
 }
 
 #workspace .header {

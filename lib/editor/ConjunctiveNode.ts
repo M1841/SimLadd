@@ -7,7 +7,7 @@ import { ExpressionNode } from "./ExpressionNode";
 import { RelayNode } from "./RelayNode";
 import { Operator } from "./Operator";
 import { getObjectType } from "./utils";
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 
 export class ConjunctiveNode implements ExpressionNode {
   id: string;
@@ -17,7 +17,7 @@ export class ConjunctiveNode implements ExpressionNode {
   constructor(id: string, operands: (RelayNode | ExpressionNode)[]) {
     if (operands.filter((o) => o instanceof DisjunctiveNode).length > 1) {
       throw new Error(
-        Logs.error(
+        Console.error(
           "A ConjunctiveNode containing multiple DisjunctiveNodes is currently not supported",
         ),
       );
@@ -52,7 +52,7 @@ export class ConjunctiveNode implements ExpressionNode {
       operands.map === undefined ||
       id === undefined
     ) {
-      throw new Error(Logs.error("Object is not a valid ConjunctiveNode"));
+      throw new Error(Console.error("Object is not a valid ConjunctiveNode"));
     }
 
     return new ConjunctiveNode(
@@ -119,7 +119,7 @@ export class ConjunctiveNode implements ExpressionNode {
               );
             } else {
               throw new Error(
-                Logs.error(
+                Console.error(
                   "Attempted applying a RelayNode value to a DisjunctiveNode",
                 ),
               );

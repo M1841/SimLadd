@@ -13,6 +13,7 @@
   --font-base: "Open Sans", sans-serif;
   --font-mono: "Ubuntu Mono", monospace;
   --color-bg: #1f1f1f;
+  --color-bg-darker: #1a1a1a;
   --color-text: #f0f0f0;
   --color-text-muted: #f0f0f090;
   --color-border: #303030;
@@ -22,9 +23,10 @@
 @media (prefers-color-scheme: light) {
   :root {
     --color-bg: #f0f0f0;
+    --color-bg-darker: #e0e0e0;
     --color-text: #0a0a0a;
     --color-text-muted: #0a0a0ad0;
-    --color-border: #d0d0d0;
+    --color-border: #c5c5c5;
     --color-scrollbar: #bababa;
   }
 }
@@ -50,7 +52,7 @@ body {
 main {
   display: flex;
   width: 100vw;
-  height: calc(100vh - 13em);
+  height: calc(100vh - 10em);
 }
 
 .scrollable::-webkit-scrollbar {

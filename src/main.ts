@@ -5,11 +5,10 @@ const state = new LazyStore("data/state.json");
 import { Menu } from "../lib/menu/Menu";
 import { LadderDiagram } from "../lib/editor/LadderDiagram";
 import { Editor } from "../lib/editor/Editor";
-import { Logs } from "../lib/logs/Logs";
 import { Workspace } from "../lib/workspace/Workspace";
+import { Console } from "../lib/console/Console";
 
 try {
-  Logs.info("Simladd started successfully");
   const program = LadderDiagram.empty();
   const examplePath = await join(await appDataDir(), "example.ladd");
   await Promise.all([
@@ -20,5 +19,5 @@ try {
     new Workspace().render(),
   ]);
 } catch (error) {
-  Logs.error(error as string);
+  Console.error(error as string);
 }

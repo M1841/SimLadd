@@ -1,4 +1,4 @@
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 import { RelayNode } from "./RelayNode";
 
 export class OutputNode extends RelayNode {
@@ -30,7 +30,7 @@ export class OutputNode extends RelayNode {
       isOpen === undefined ||
       id === undefined
     ) {
-      throw new Error(Logs.error("Object is not a valid OutputNode"));
+      throw new Error(Console.error("Object is not a valid OutputNode"));
     }
 
     return new OutputNode(id, address, label, isOpen);

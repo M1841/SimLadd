@@ -1,4 +1,4 @@
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 import { ConjunctiveNode } from "./ConjunctiveNode";
 import { DisjunctiveNode } from "./DisjunctiveNode";
 import { OutputNode } from "./OutputNode";
@@ -14,7 +14,7 @@ export function getExpressionType(object: Object) {
     case "DisjunctiveNode":
       return DisjunctiveNode;
     default:
-      throw new Error(Logs.error("Expression has invalid type"));
+      throw new Error(Console.error("Expression has invalid type"));
   }
 }
 
@@ -32,6 +32,6 @@ export function getObjectType(object: Object) {
     case "OutputNode":
       return OutputNode;
     default:
-      throw new Error(Logs.error("Node has unrecognized type"));
+      throw new Error(Console.error("Node has unrecognized type"));
   }
 }

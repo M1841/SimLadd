@@ -6,7 +6,7 @@ import { ConjunctiveNode } from "./ConjunctiveNode";
 import { DisjunctiveNode } from "./DisjunctiveNode";
 import { OutputNode } from "./OutputNode";
 import { RelayNode } from "./RelayNode";
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 
 export class LadderDiagram {
   networks: Network[];
@@ -34,7 +34,7 @@ export class LadderDiagram {
       networks === undefined ||
       networks.map === undefined
     ) {
-      throw new Error(Logs.error("Object is not a valid LadderDiagram"));
+      throw new Error(Console.error("Object is not a valid LadderDiagram"));
     }
 
     return new LadderDiagram(
@@ -75,7 +75,7 @@ export class LadderDiagram {
   }
 
   static async load(path: string): Promise<LadderDiagram> {
-    Logs.info(`Loading program from ${path}`);
+    // Console.info(`Loading program from ${path}`);
     const decoder = new TextDecoder();
     const bytes = await readFile(path);
     const content = decoder.decode(bytes);
@@ -88,12 +88,12 @@ export class LadderDiagram {
     const bytes = encoder.encode(json);
     await writeFile(path, bytes);
     if (!quiet) {
-      Logs.info(`Saving program at ${path}`);
+      // Console.info(`Saving program at ${path}`);
     }
   }
 
   static empty(): LadderDiagram {
-    Logs.info("Loading empty LadderDiagram");
+    // Console.info("Loading empty LadderDiagram");
     return new LadderDiagram([
       new Network(
         uuid(),

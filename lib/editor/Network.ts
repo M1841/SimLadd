@@ -2,7 +2,7 @@ import { ConjunctiveNode } from "./ConjunctiveNode";
 import { ExpressionNode } from "./ExpressionNode";
 import { getExpressionType } from "./utils";
 import { RelayNode } from "./RelayNode";
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 
 export class Network {
   id: string;
@@ -49,7 +49,7 @@ export class Network {
       output === undefined ||
       id === undefined
     ) {
-      throw new Error(Logs.error("Object is not a valid Network"));
+      throw new Error(Console.error("Object is not a valid Network"));
     }
 
     const inputType = getExpressionType(input);

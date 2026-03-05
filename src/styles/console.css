@@ -1,8 +1,9 @@
-#logs {
+#console {
   border-top: 1px solid var(--color-border);
-  height: 13em;
+  height: 10em;
   padding: 0.5em;
   overflow-y: scroll;
+  background-color: var(--color-bg-darker);
 }
 
 .message {

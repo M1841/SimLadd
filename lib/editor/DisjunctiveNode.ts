@@ -5,7 +5,7 @@ import { ExpressionNode } from "./ExpressionNode";
 import { Operator } from "./Operator";
 import { getObjectType } from "./utils";
 import { RelayNode } from "./RelayNode";
-import { Logs } from "../logs/Logs";
+import { Console } from "../console/Console";
 
 export class DisjunctiveNode implements ExpressionNode {
   id: string;
@@ -43,7 +43,7 @@ export class DisjunctiveNode implements ExpressionNode {
       operands.map === undefined ||
       id === undefined
     ) {
-      throw new Error(Logs.error("Object is not a valid DisjunctiveNode"));
+      throw new Error(Console.error("Object is not a valid DisjunctiveNode"));
     }
 
     return new DisjunctiveNode(
