@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { LazyStore } from "@tauri-apps/plugin-store";
 const state = new LazyStore("data/state.json");
 
@@ -66,13 +67,17 @@ export class RelayNode implements Node {
     const address = document.createElement("span");
     address.classList.add("node-address");
     address.textContent = this.address;
-    address.contentEditable = "true";
+    // address.contentEditable = "true";
+    address.addEventListener("mouseenter", () => {
+      address.contentEditable = "true";
+    });
     address.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         address.blur();
       }
     });
     address.addEventListener("blur", async () => {
+      address.contentEditable = "false";
       if (this.address === address.textContent) {
         return;
       }
@@ -120,7 +125,10 @@ export class RelayNode implements Node {
     node.addEventListener("dragstart", async (event) => {
       node.id = "dragged";
       event.dataTransfer!.setData("relay-node", "");
-      await state.set("drag.node", { id: this.id, ...this.toObject() });
+      await state.set("drag.node", {
+        id: this.id ?? uuid(),
+        ...this.toObject(),
+      });
       await state.save();
     });
     node.addEventListener("drag", (event) => {

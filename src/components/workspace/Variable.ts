@@ -18,19 +18,34 @@ export class Variable {
     const address = document.createElement("span");
     address.textContent = this.address;
     address.classList.add("address");
-    address.contentEditable = "true";
+    address.addEventListener("mouseenter", () => {
+      address.contentEditable = "true";
+    });
+    address.addEventListener("blur", () => {
+      address.contentEditable = "false";
+    });
     variable.appendChild(address);
 
     const label = document.createElement("span");
     label.textContent = this.label;
     label.classList.add("label");
-    label.contentEditable = "true";
+    label.addEventListener("mouseenter", () => {
+      label.contentEditable = "true";
+    });
+    label.addEventListener("blur", () => {
+      label.contentEditable = "false";
+    });
     variable.appendChild(label);
 
     const type = document.createElement("span");
     type.textContent = this.type;
     type.classList.add("type");
-    type.contentEditable = "true";
+    type.addEventListener("mouseenter", () => {
+      type.contentEditable = "true";
+    });
+    type.addEventListener("blur", () => {
+      type.contentEditable = "false";
+    });
     variable.appendChild(type);
 
     return variable;

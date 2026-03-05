@@ -1,11 +1,11 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 const state = new LazyStore("data/state.json");
 
-import { Menu } from "../lib/menu/Menu";
-import { LadderDiagram } from "../lib/editor/LadderDiagram";
-import { Editor } from "../lib/editor/Editor";
-import { Workspace } from "../lib/workspace/Workspace";
-import { Console } from "../lib/console/Console";
+import { Menu } from "./components/menu/Menu";
+import { LadderDiagram } from "./components/editor/LadderDiagram";
+import { Editor } from "./components/editor/Editor";
+import { Workspace } from "./components/workspace/Workspace";
+import { Console } from "./components/console/Console";
 
 try {
   const program = await LadderDiagram.empty();
