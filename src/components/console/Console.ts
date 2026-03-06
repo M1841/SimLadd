@@ -32,7 +32,7 @@ export class Console {
 
   static append(message: Message) {
     const consoleElement = document.getElementById("console")!;
-    const messageElement = message.render();
+    const messageElement = message.toDiv();
     consoleElement.appendChild(messageElement);
     messageElement.scrollIntoView();
   }

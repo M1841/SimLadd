@@ -8,6 +8,7 @@
 
 .message {
   font-family: var(--font-mono);
+  color: var(--color-text-muted);
 }
 
 .message.ERROR {

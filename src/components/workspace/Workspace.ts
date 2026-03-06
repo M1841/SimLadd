@@ -1,11 +1,11 @@
+import { VarType } from "../runtime/VarType";
 import { Variable } from "./Variable";
-import { Type } from "../runtime/Type";
 
 export class Workspace {
   variables: Variable[] = [
-    new Variable("%I0.0", "START", Type.Bit),
-    new Variable("%I0.1", "STOP", Type.Bit),
-    new Variable("%Q0.0", "LED", Type.Bit),
+    new Variable("%I0.0", "START", VarType.Bit),
+    new Variable("%I0.1", "STOP", VarType.Bit),
+    new Variable("%Q0.0", "LED", VarType.Bit),
   ];
 
   static isShown = true;
@@ -59,7 +59,7 @@ export class Workspace {
     header.appendChild(type);
 
     this.variables.forEach((variable) => {
-      workspace.appendChild(variable.render());
+      workspace.appendChild(variable.toDiv());
     });
   }
 }

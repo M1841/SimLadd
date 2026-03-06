@@ -1,17 +1,27 @@
-import { Type } from "../runtime/Type";
+import { VarType } from "../runtime/VarType";
 
 export class Variable {
   address: string;
   label: string;
-  type: Type;
+  varType: VarType;
 
-  constructor(address: string, label: string, type: Type) {
+  constructor(address: string, label: string, vartype: VarType) {
     this.address = address;
     this.label = label;
-    this.type = type;
+    this.varType = vartype;
   }
 
-  render(): HTMLDivElement {
+  toObject(): Object {
+    return {
+      address: this.address,
+      label: this.label,
+      varType: this.varType,
+
+      __type: "Variable",
+    };
+  }
+
+  toDiv(): HTMLDivElement {
     const variable = document.createElement("div");
     variable.classList.add("variable");
 
@@ -37,16 +47,16 @@ export class Variable {
     });
     variable.appendChild(label);
 
-    const type = document.createElement("span");
-    type.textContent = this.type;
-    type.classList.add("type");
-    type.addEventListener("mouseenter", () => {
-      type.contentEditable = "true";
+    const varType = document.createElement("span");
+    varType.textContent = this.varType;
+    varType.classList.add("varType");
+    varType.addEventListener("mouseenter", () => {
+      varType.contentEditable = "true";
     });
-    type.addEventListener("blur", () => {
-      type.contentEditable = "false";
+    varType.addEventListener("blur", () => {
+      varType.contentEditable = "false";
     });
-    variable.appendChild(type);
+    variable.appendChild(varType);
 
     return variable;
   }

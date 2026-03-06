@@ -39,16 +39,16 @@
   position: relative;
 }
 
-.network-nodes .disjunctive-node,
-.network-nodes .conjunctive-node {
+.network-nodes .disjunction,
+.network-nodes .conjunction {
   display: flex;
   min-width: fit-content;
   min-height: fit-content;
 }
 
 .network-nodes::before,
-.disjunctive-node::before,
-.conjunctive-node::before {
+.disjunction::before,
+.conjunction::before {
   content: "";
   position: absolute;
   top: 2em;
@@ -58,32 +58,39 @@
   z-index: -1;
 }
 
-.disjunctive-node {
+.disjunction {
   flex-direction: column;
   gap: 3em;
   position: relative;
+  margin-right: 1em;
 }
 
-.disjunctive-node > .conjunctive-node {
+.disjunction > .conjunction {
   width: 100%;
 }
 
-.disjunctive-node::before {
+.disjunction::before {
   content: "";
   position: absolute;
+  left: -0.2em;
   top: 2em;
   bottom: 1.75em;
-  width: 100%;
+  width: 98%;
   border-right: solid 0.25em var(--color-text);
+  border-left: solid 0.25em var(--color-text);
   z-index: -1;
 }
-.conjunctive-node {
+.conjunction {
   position: relative;
   min-width: 6.76em !important;
   min-height: 4em !important;
 }
 
-.relay-node {
+.dropzone {
+  outline: 1px dashed var(--color-text-muted);
+}
+
+.relay {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,21 +103,21 @@
   cursor: grab;
 }
 
-.node-address,
-.node-label {
+.relay-address,
+.relay-label {
   font-family: var(--font-mono);
   color: var(--color-text-muted);
 }
 
-.node-address:focus {
+.relay-address:focus {
   color: var(--color-text);
 }
 
-.node-address {
+.relay-address {
   cursor: text;
 }
 
-.node-icon {
+.relay-icon {
   font-family: var(--font-mono);
   background-color: var(--color-bg);
   margin-left: 1.5em;
@@ -120,8 +127,8 @@
   cursor: pointer;
 }
 
-.node-icon,
-.node-label,
+.relay-icon,
+.relay-label,
 .network-header {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -139,4 +146,33 @@
 
 #dragged {
   opacity: 0.5;
+}
+
+.left-dropzone,
+.right-dropzone {
+  position: absolute;
+  height: 0.8em;
+  width: 0.8em;
+  background-color: var(--color-bg);
+  outline: 1px dashed var(--color-text-muted);
+  top: 1.7em;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  opacity: 0%;
+  cursor: context-menu;
+  scale: 110%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.left-dropzone:hover,
+.right-dropzone:hover {
+  opacity: 100%;
+}
+
+.left-dropzone {
+  left: 0.5em;
+}
+.right-dropzone {
+  right: 0.5em;
 }

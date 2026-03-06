@@ -1,18 +1,17 @@
 import { Console } from "../console/Console";
-import { ConjunctiveNode } from "./ConjunctiveNode";
-import { DisjunctiveNode } from "./DisjunctiveNode";
-import { OutputNode } from "./OutputNode";
-import { RelayNode } from "./RelayNode";
+import { Conjunction } from "./Conjunction";
+import { Disjunction } from "./Disjunction";
+import { Relay } from "./Relay";
 
 export function getExpressionType(object: Object) {
   const __type = Object.entries(object).find(
     ([key, _]) => key === "__type",
   )?.[1];
   switch (__type) {
-    case "ConjunctiveNode":
-      return ConjunctiveNode;
-    case "DisjunctiveNode":
-      return DisjunctiveNode;
+    case "Conjunction":
+      return Conjunction;
+    case "Disjunction":
+      return Disjunction;
     default:
       throw new Error(Console.error("Expression has invalid type"));
   }
@@ -23,14 +22,12 @@ export function getObjectType(object: Object) {
     ([key, _]) => key === "__type",
   )?.[1];
   switch (__type) {
-    case "ConjunctiveNode":
-      return ConjunctiveNode;
-    case "DisjunctiveNode":
-      return DisjunctiveNode;
-    case "RelayNode":
-      return RelayNode;
-    case "OutputNode":
-      return OutputNode;
+    case "Conjunction":
+      return Conjunction;
+    case "Disjunction":
+      return Disjunction;
+    case "Relay":
+      return Relay;
     default:
       throw new Error(Console.error("Node has unrecognized type"));
   }

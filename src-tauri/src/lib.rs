@@ -1,6 +1,7 @@
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}))
     .plugin(tauri_plugin_process::init())
     .plugin(tauri_plugin_prevent_default::debug())
     .plugin(tauri_plugin_store::Builder::new().build())

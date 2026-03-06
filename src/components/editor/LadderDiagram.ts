@@ -1,15 +1,16 @@
-import { writeFile, readFile } from "@tauri-apps/plugin-fs";
-import { v4 as uuid } from "uuid";
+import { readFile, writeFile } from "@tauri-apps/plugin-fs";
 import { LazyStore } from "@tauri-apps/plugin-store";
-const state = new LazyStore("data/state.json");
+import { v4 as uuid } from "uuid";
 
-import { Network } from "./Network";
-import { ConjunctiveNode } from "./ConjunctiveNode";
-import { DisjunctiveNode } from "./DisjunctiveNode";
-import { OutputNode } from "./OutputNode";
-import { RelayNode } from "./RelayNode";
-import { Console } from "../console/Console";
 import { appDataDir, join } from "@tauri-apps/api/path";
+import validate from "../../../lib/validate";
+import { Console } from "../console/Console";
+import { Conjunction } from "./Conjunction";
+import { Disjunction } from "./Disjunction";
+import { Network } from "./Network";
+import { Relay } from "./Relay";
+
+const cache = new LazyStore("cache/cache");
 
 export class LadderDiagram {
   networks: Network[];
@@ -26,17 +27,9 @@ export class LadderDiagram {
     };
   }
   static fromObject(object: Object): LadderDiagram {
-    const entries = Object.entries(object);
+    const { networks } = validate(object, "LadderDiagram", ["networks"]);
 
-    const __type = entries.find(([key, _]) => key === "__type")?.[1];
-    const networks = entries.find(([key, _]) => key === "networks")?.[1];
-
-    if (
-      __type === undefined ||
-      __type !== "LadderDiagram" ||
-      networks === undefined ||
-      networks.map === undefined
-    ) {
+    if (!Array.isArray(networks)) {
       throw new Error(Console.error("Object is not a valid LadderDiagram"));
     }
 
@@ -47,30 +40,27 @@ export class LadderDiagram {
 
   async render() {
     const diagram = document.getElementById("ladder-diagram")!;
-    await Promise.all(
-      [...diagram.children].map((child) => diagram.removeChild(child)),
-    );
-
-    await Promise.all(
-      this.networks.map((network) => diagram.appendChild(network.render())),
-    );
+    [...diagram.children].forEach((child) => diagram.removeChild(child));
+    this.networks.forEach((network) => diagram.appendChild(network.toDiv()));
   }
 
-  async withUpdatedNode(node: RelayNode): Promise<LadderDiagram> {
+  async withUpdatedRelay(relay: Relay): Promise<LadderDiagram> {
+    await cache.set("isSaved", false);
     return new LadderDiagram(
       await Promise.all(
-        this.networks.map((network) => network.withUpdatedNode(node)),
+        this.networks.map((network) => network.withUpdatedRelay(relay)),
       ),
     );
   }
-  async withMovedNode(
-    node: RelayNode,
+  async withMovedRelay(
+    relay: Relay,
     destinationId: string,
   ): Promise<LadderDiagram> {
+    await cache.set("isSaved", false);
     return new LadderDiagram(
       await Promise.all(
         this.networks.map((network) =>
-          network.withMovedNode(node, destinationId),
+          network.withMovedRelay(relay, destinationId),
         ),
       ),
     );
@@ -79,7 +69,10 @@ export class LadderDiagram {
   static async load(path: string): Promise<LadderDiagram> {
     Console.info(`opening program from ${path}`);
     const decoder = new TextDecoder();
-    const bytes = await readFile(path);
+    const [bytes, _] = await Promise.all([
+      readFile(path),
+      cache.set("isSaved", true),
+    ]);
     const content = decoder.decode(bytes);
     const json = JSON.parse(content);
     return LadderDiagram.fromObject(json);
@@ -94,7 +87,7 @@ export class LadderDiagram {
     const encoder = new TextEncoder();
     const json = JSON.stringify(this.toObject());
     const bytes = encoder.encode(json);
-    await writeFile(path, bytes);
+    await Promise.all([writeFile(path, bytes), cache.set("isSaved", true)]);
     if (!quiet) {
       Console.info(`saving program at ${path}`);
     }
@@ -102,13 +95,13 @@ export class LadderDiagram {
 
   static async empty(): Promise<LadderDiagram> {
     Console.info("initializing program");
-    await state.delete("program-path");
+    await cache.delete("program-path");
     return new LadderDiagram([
       new Network(
         uuid(),
         "Network 1",
-        new ConjunctiveNode(uuid(), []),
-        new ConjunctiveNode(uuid(), []),
+        new Conjunction(uuid(), []),
+        new Conjunction(uuid(), []),
       ),
     ]);
   }
@@ -116,38 +109,42 @@ export class LadderDiagram {
     new Network(
       uuid(),
       "Network 1",
-      new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
-      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+      new Conjunction(uuid(), [new Relay(uuid(), "%I0.0", "START")]),
+      new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED", true, true)]),
     ),
     new Network(
       uuid(),
       "Network 2",
-      new ConjunctiveNode(uuid(), [
-        new RelayNode(uuid(), "%I0.0", "START"),
-        new RelayNode(uuid(), "%I0.1", "STOP", false),
+      new Conjunction(uuid(), [
+        new Relay(uuid(), "%I0.0", "START"),
+        new Relay(uuid(), "%I0.1", "STOP", false),
       ]),
-      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+      new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED", true, true)]),
     ),
     new Network(
       uuid(),
       "Network 3",
-      new DisjunctiveNode(uuid(), [
-        new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%I0.0", "START")]),
-        new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%Q0.0", "LED")]),
+      new Conjunction(uuid(), [
+        new Disjunction(uuid(), [
+          new Conjunction(uuid(), [new Relay(uuid(), "%I0.0", "START")]),
+          new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED")]),
+        ]),
       ]),
-      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+      new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED", true, true)]),
     ),
     new Network(
       uuid(),
       "Network 4",
-      new DisjunctiveNode(uuid(), [
-        new ConjunctiveNode(uuid(), [
-          new RelayNode(uuid(), "%I0.0", "START"),
-          new RelayNode(uuid(), "%I0.1", "STOP", false),
+      new Conjunction(uuid(), [
+        new Disjunction(uuid(), [
+          new Conjunction(uuid(), [
+            new Relay(uuid(), "%I0.0", "START"),
+            new Relay(uuid(), "%I0.1", "STOP", false),
+          ]),
+          new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED")]),
         ]),
-        new ConjunctiveNode(uuid(), [new RelayNode(uuid(), "%Q0.0", "LED")]),
       ]),
-      new ConjunctiveNode(uuid(), [new OutputNode(uuid(), "%Q0.0", "LED")]),
+      new Conjunction(uuid(), [new Relay(uuid(), "%Q0.0", "LED", true, true)]),
     ),
   ]);
 }

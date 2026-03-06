@@ -1,16 +1,17 @@
 import {
-  Menu as TauriMenu,
   MenuItem,
   PredefinedMenuItem,
   Submenu,
+  Menu as TauriMenu,
 } from "@tauri-apps/api/menu";
 import { exit } from "@tauri-apps/plugin-process";
 import { LazyStore } from "@tauri-apps/plugin-store";
-const state = new LazyStore("data/state.json");
 
 import { Console } from "../console/Console";
 import { Workspace } from "../workspace/Workspace";
 import * as Program from "./Program";
+
+const cache = new LazyStore("cache/cache");
 
 export class Menu {
   static async render() {
@@ -21,12 +22,12 @@ export class Menu {
           items: [
             await MenuItem.new({
               id: "new",
-              text: "New Program\tCtrl+N",
+              text: "New Program\t\tCtrl+N",
               action: Program.init,
             }),
             await MenuItem.new({
               id: "open",
-              text: "Open Program\tCtrl+O",
+              text: "Open Program\t\tCtrl+O",
               action: Program.open,
             }),
             await PredefinedMenuItem.new({
@@ -35,12 +36,12 @@ export class Menu {
             }),
             await MenuItem.new({
               id: "save",
-              text: "Save\tCtrl+S",
+              text: "Save\t\tCtrl+S",
               action: Program.save,
             }),
             await MenuItem.new({
               id: "save-as",
-              text: "Save Program as\tCtrl+Shift+S",
+              text: "Save Program as\t\tCtrl+Shift+S",
               action: Program.saveAs,
             }),
             await PredefinedMenuItem.new({
@@ -87,7 +88,7 @@ export class Menu {
             }),
             await MenuItem.new({
               id: "exit",
-              text: "Exit\tAlt+F4",
+              text: "Exit\t\tAlt+F4",
               action: async () => {
                 await exit(0);
               },
@@ -96,7 +97,16 @@ export class Menu {
         }),
         await Submenu.new({
           text: "Edit",
-          items: [],
+          items: [
+            await MenuItem.new({
+              id: "clear_cache",
+              text: "Clear Cache",
+              action: async () => {
+                await cache.reset();
+                Console.info("clearing application cache");
+              },
+            }),
+          ],
         }),
         await Submenu.new({
           text: "View",
@@ -139,7 +149,7 @@ export class Menu {
               Program.open();
               break;
             case "S":
-              if (!(await state.get("program-path"))) {
+              if (!(await cache.get("program-path"))) {
                 Program.saveAs();
               } else {
                 Program.save();

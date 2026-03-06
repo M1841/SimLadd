@@ -1,20 +1,18 @@
-import { ConjunctiveNode } from "./ConjunctiveNode";
-import { ExpressionNode } from "./ExpressionNode";
-import { getExpressionType } from "./utils";
-import { RelayNode } from "./RelayNode";
-import { Console } from "../console/Console";
+import validate from "../../../lib/validate";
+import { Conjunction } from "./Conjunction";
+import { Relay } from "./Relay";
 
 export class Network {
   id: string;
   name: string;
-  input: ExpressionNode;
-  output: ConjunctiveNode;
+  input: Conjunction;
+  output: Conjunction;
 
   constructor(
     id: string,
     name: string,
-    input: ExpressionNode,
-    outputs: ConjunctiveNode,
+    input: Conjunction,
+    outputs: Conjunction,
   ) {
     this.id = id;
     this.name = name;
@@ -33,36 +31,22 @@ export class Network {
     };
   }
   static fromObject(object: Object): Network {
-    const entries = Object.entries(object);
-
-    const __type = entries.find(([key, _]) => key === "__type")?.[1];
-    const name = entries.find(([key, _]) => key === "name")?.[1];
-    const input = entries.find(([key, _]) => key === "input")?.[1];
-    const output = entries.find(([key, _]) => key === "output")?.[1];
-    const id = entries.find(([key, _]) => key === "id")?.[1];
-
-    if (
-      __type === undefined ||
-      __type !== "Network" ||
-      name === undefined ||
-      input === undefined ||
-      output === undefined ||
-      id === undefined
-    ) {
-      throw new Error(Console.error("Object is not a valid Network"));
-    }
-
-    const inputType = getExpressionType(input);
+    const { name, input, output, id } = validate(object, "Network", [
+      "name",
+      "input",
+      "output",
+      "id",
+    ]);
 
     return new Network(
       id,
       name,
-      inputType.fromObject(input),
-      ConjunctiveNode.fromObject(output),
+      Conjunction.fromObject(input),
+      Conjunction.fromObject(output),
     );
   }
 
-  render(): HTMLDivElement {
+  toDiv(): HTMLDivElement {
     const network = document.createElement("div");
     network.classList.add("network");
     network.id = this.id;
@@ -105,21 +89,18 @@ export class Network {
     return network;
   }
 
-  async withUpdatedNode(node: RelayNode): Promise<Network> {
+  async withUpdatedRelay(relay: Relay): Promise<Network> {
     const [input, output] = await Promise.all([
-      this.input.withUpdatedNode(node),
-      this.output.withUpdatedNode(node),
+      this.input.withUpdatedRelay(relay),
+      this.output.withUpdatedRelay(relay),
     ]);
     return new Network(this.id, this.name, input, output);
   }
 
-  async withMovedNode(
-    node: RelayNode,
-    destinationId: string,
-  ): Promise<Network> {
+  async withMovedRelay(relay: Relay, destinationId: string): Promise<Network> {
     const [input, output] = await Promise.all([
-      this.input.withMovedNode(node, destinationId),
-      this.output.withMovedNode(node, destinationId),
+      this.input.withMovedRelay(relay, destinationId),
+      this.output.withMovedRelay(relay, destinationId),
     ]);
     return new Network(this.id, this.name, input, output);
   }

@@ -4,19 +4,19 @@ import {
   save as saveDialog,
 } from "@tauri-apps/plugin-dialog";
 import { LazyStore } from "@tauri-apps/plugin-store";
-const state = new LazyStore("data/state.json");
 
-import { LadderDiagram } from "../editor/LadderDiagram";
 import { Console } from "../console/Console";
+import { LadderDiagram } from "../editor/LadderDiagram";
+
+const cache = new LazyStore("cache/cache");
 
 async function init() {
   const program = await LadderDiagram.empty();
   await Promise.all([
-    state.set("program", program.toObject()),
-    state.delete("program-path"),
+    cache.set("program", program.toObject()),
+    cache.delete("program-path"),
     program.render(),
   ]);
-  await state.save();
 }
 
 async function open() {
@@ -38,22 +38,23 @@ async function open() {
   try {
     const program = await LadderDiagram.load(path!);
     await Promise.all([
-      state.set("program", program.toObject()),
-      state.set("program-path", path),
+      cache.set("program", program.toObject()),
+      cache.set("program-path", path),
       program.render(),
     ]);
-    await state.save();
+    await cache.save();
   } catch (error) {
     Console.error("program file appears to be malformed or corrupted");
   }
 }
 
 async function save() {
-  const path = await state.get<string>("program-path");
-  const program = LadderDiagram.fromObject(
-    (await state.get<Object>("program"))!,
-  );
-  await Promise.all([state.set("program-path", path), program.save(path!)]);
+  const [cachedProgram, path] = await Promise.all([
+    cache.get<Object>("program"),
+    cache.get<string>("program-path"),
+  ]);
+  const program = LadderDiagram.fromObject(cachedProgram!);
+  await Promise.all([cache.set("program-path", path), program.save(path!)]);
 }
 
 async function saveAs() {
@@ -66,12 +67,12 @@ async function saveAs() {
       },
     ],
     defaultPath:
-      (await state.get<string>("program-path")) ?? (await appDataDir()),
+      (await cache.get<string>("program-path")) ?? (await appDataDir()),
   });
   const program = LadderDiagram.fromObject(
-    (await state.get<Object>("program"))!,
+    (await cache.get<Object>("program"))!,
   );
-  await Promise.all([state.set("program-path", path), program.save(path!)]);
+  await Promise.all([cache.set("program-path", path), program.save(path!)]);
 }
 
 export { init, open, save, saveAs };

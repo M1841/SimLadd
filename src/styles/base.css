@@ -14,8 +14,8 @@
   --font-mono: "Ubuntu Mono", monospace;
   --color-bg: #1f1f1f;
   --color-bg-darker: #1a1a1a;
-  --color-text: #f0f0f0;
-  --color-text-muted: #f0f0f090;
+  --color-text: #eaeaea;
+  --color-text-muted: #909090;
   --color-border: #303030;
   --color-scrollbar: #4a4a4a;
 }
