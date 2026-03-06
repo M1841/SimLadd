@@ -1,6 +1,6 @@
-import validate from "../../../lib/validate";
-import { Conjunction } from "./Conjunction";
-import { Relay } from "./Relay";
+import { validate } from "../../../lib/validate";
+import { Conjunction } from "./nodes/Conjunction";
+import { Relay } from "./nodes/Relay";
 
 export class Network {
   id: string;

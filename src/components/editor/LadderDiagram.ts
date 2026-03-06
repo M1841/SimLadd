@@ -3,12 +3,12 @@ import { LazyStore } from "@tauri-apps/plugin-store";
 import { v4 as uuid } from "uuid";
 
 import { appDataDir, join } from "@tauri-apps/api/path";
-import validate from "../../../lib/validate";
+import { validate } from "../../../lib/validate";
 import { Console } from "../console/Console";
-import { Conjunction } from "./Conjunction";
-import { Disjunction } from "./Disjunction";
+import { Conjunction } from "./nodes/Conjunction";
+import { Disjunction } from "./nodes/Disjunction";
 import { Network } from "./Network";
-import { Relay } from "./Relay";
+import { Relay } from "./nodes/Relay";
 
 const cache = new LazyStore("cache/cache");
 

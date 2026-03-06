@@ -1,30 +1,26 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 
-import validate from "../../../lib/validate";
-import { Console } from "../console/Console";
+import { getType } from "../../../../lib/getType";
+import { validate } from "../../../../lib/validate";
+import { Console } from "../../console/Console";
+import { LadderDiagram } from "../LadderDiagram";
 import { Disjunction } from "./Disjunction";
-import { LadderDiagram } from "./LadderDiagram";
-import { Operator } from "./Operator";
 import { Relay } from "./Relay";
-import { getObjectType } from "./utils";
 
 const cache = new LazyStore("cache/cache");
 
 export class Conjunction {
   id: string;
-  operator: Operator;
   operands: (Relay | Conjunction | Disjunction)[];
 
   constructor(id: string, operands: (Relay | Conjunction | Disjunction)[]) {
     this.id = id;
-    this.operator = Operator.AND;
     this.operands = operands;
   }
 
   toObject(): Object {
     return {
       id: this.id,
-      operator: this.operator,
       operands: this.operands.map((operand) => operand.toObject()),
 
       __type: "Conjunction",
@@ -32,7 +28,6 @@ export class Conjunction {
   }
   static fromObject(object: Object): Conjunction {
     const { id, operands } = validate(object, "Conjunction", [
-      "operator",
       "operands",
       "id",
     ]);
@@ -43,9 +38,7 @@ export class Conjunction {
 
     return new Conjunction(
       id,
-      operands.map((operand: Object) =>
-        getObjectType(operand).fromObject(operand),
-      ),
+      operands.map((operand: Object) => getType(operand).fromObject(operand)),
     );
   }
 

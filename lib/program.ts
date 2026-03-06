@@ -5,8 +5,8 @@ import {
 } from "@tauri-apps/plugin-dialog";
 import { LazyStore } from "@tauri-apps/plugin-store";
 
-import { Console } from "../console/Console";
-import { LadderDiagram } from "../editor/LadderDiagram";
+import { Console } from "../src/components/console/Console";
+import { LadderDiagram } from "../src/components/editor/LadderDiagram";
 
 const cache = new LazyStore("cache/cache");
 

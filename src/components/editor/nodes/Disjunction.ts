@@ -1,26 +1,22 @@
 import { v4 as uuid } from "uuid";
 
-import validate from "../../../lib/validate";
-import { Console } from "../console/Console";
+import { validate } from "../../../../lib/validate";
+import { Console } from "../../console/Console";
 import { Conjunction } from "./Conjunction";
-import { Operator } from "./Operator";
 import { Relay } from "./Relay";
 
 export class Disjunction {
   id: string;
-  operator: Operator;
   operands: Conjunction[];
 
   constructor(id: string, operands: Conjunction[]) {
     this.id = id;
-    this.operator = Operator.OR;
     this.operands = operands;
   }
 
   toObject(): Object {
     return {
       id: this.id,
-      operator: this.operator,
       operands: this.operands.map((operand) => operand.toObject()),
 
       __type: "Disjunction",
@@ -28,7 +24,6 @@ export class Disjunction {
   }
   static fromObject(object: Object): Disjunction {
     const { id, operands } = validate(object, "Disjunction", [
-      "operator",
       "operands",
       "id",
     ]);
@@ -54,7 +49,6 @@ export class Disjunction {
         disjunction.appendChild(new Conjunction(uuid(), [operand]).toDiv());
       }
     });
-    disjunction.classList.add(this.operator);
 
     return disjunction;
   }

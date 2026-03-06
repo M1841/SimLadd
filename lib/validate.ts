@@ -1,6 +1,6 @@
 import { Console } from "../src/components/console/Console";
 
-export default function (object: Object, __type: string, fields: string[]) {
+export function validate(object: Object, __type: string, fields: string[]) {
   const entries = Object.entries(object);
 
   const found__type = entries.find(([key, _]) => key === "__type")?.[1];

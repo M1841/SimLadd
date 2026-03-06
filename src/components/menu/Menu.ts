@@ -9,7 +9,7 @@ import { LazyStore } from "@tauri-apps/plugin-store";
 
 import { Console } from "../console/Console";
 import { Workspace } from "../workspace/Workspace";
-import * as Program from "./Program";
+import { init, open, save, saveAs } from "../../../lib/program";
 
 const cache = new LazyStore("cache/cache");
 
@@ -23,12 +23,12 @@ export class Menu {
             await MenuItem.new({
               id: "new",
               text: "New Program\t\tCtrl+N",
-              action: Program.init,
+              action: init,
             }),
             await MenuItem.new({
               id: "open",
               text: "Open Program\t\tCtrl+O",
-              action: Program.open,
+              action: open,
             }),
             await PredefinedMenuItem.new({
               text: "separator",
@@ -37,12 +37,12 @@ export class Menu {
             await MenuItem.new({
               id: "save",
               text: "Save\t\tCtrl+S",
-              action: Program.save,
+              action: save,
             }),
             await MenuItem.new({
               id: "save-as",
               text: "Save Program as\t\tCtrl+Shift+S",
-              action: Program.saveAs,
+              action: saveAs,
             }),
             await PredefinedMenuItem.new({
               text: "separator",
@@ -137,22 +137,22 @@ export class Menu {
         if (event.getModifierState("Shift")) {
           switch (event.key.toUpperCase()) {
             case "S":
-              Program.saveAs();
+              saveAs();
               break;
           }
         } else {
           switch (event.key.toUpperCase()) {
             case "N":
-              Program.init();
+              init();
               break;
             case "O":
-              Program.open();
+              open();
               break;
             case "S":
               if (!(await cache.get("program-path"))) {
-                Program.saveAs();
+                saveAs();
               } else {
-                Program.save();
+                save();
               }
               break;
             case "B":

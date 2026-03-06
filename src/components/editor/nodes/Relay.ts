@@ -1,8 +1,8 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 import { v4 as uuid } from "uuid";
 
-import validate from "../../../lib/validate";
-import { LadderDiagram } from "./LadderDiagram";
+import { validate } from "../../../../lib/validate";
+import { LadderDiagram } from "../LadderDiagram";
 
 const cache = new LazyStore("cache/cache");
 
