@@ -5,7 +5,6 @@ export function validate(object: Object, __type: string, fields: string[]) {
 
   const found__type = entries.find(([key, _]) => key === "__type")?.[1];
   if (found__type !== __type) {
-    console.log(object);
     throw new Error(Console.error(`Object is not a valid ${__type}`));
   }
 
